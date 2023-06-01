@@ -1,4 +1,7 @@
 #!/bin/bash
+# clean-up
+bash cleanup.sh
+
 # Cognito userpool
 export COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
 
@@ -54,7 +57,8 @@ aws appsync start-schema-creation \
 
 # Prime Web config
 export GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
-sed "s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g" < src/public/aws-exports.js > web/aws-exports.js
+sed "s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g" < aws-exports.js > web/aws-exports.js
+cp web/aws-exports.js src/public/aws-exports.js
 
 clear
 echo Cognito UserPool Id: $COGNITOUSERPOOLID
