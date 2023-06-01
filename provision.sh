@@ -3,12 +3,23 @@
 bash cleanup.sh
 
 # Cognito userpool
-export COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
+COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
+
+# Cognito domain (to expose HostedUI)
+AWS_ACCOUNT=`aws sts get-caller-identity | jq -r .Account`
+COGNITODOMAIN=`aws cognito-idp create-user-pool-domain \
+    --domain $AWS_ACCOUNT \
+    --user-pool-id $COGNITOUSERPOOLID | jq -r .UserPoolDomain`
 
 # Cognito web client
-export WEBCLIENTID=`aws cognito-idp create-user-pool-client \
+WEBCLIENTID=`aws cognito-idp create-user-pool-client \
     --user-pool-id $COGNITOUSERPOOLID \
-    --callback-url http://localhost:3000/signIn \
+    --callback-urls http://localhost:3000/signIn \
+    --logout-urls http://localhost:3000/signOut \
+    --supported-identity-providers COGNITO \
+    --allowed-o-auth-flows-user-pool-client \
+    --allowed-o-auth-flows code \
+    --allowed-o-auth-scopes openid profile aws.cognito.signin.user.admin \
     --client-name web | jq -r .UserPoolClient.ClientId`
 
 # Cognito users
@@ -45,7 +56,7 @@ aws cognito-idp admin-add-user-to-group \
 
 # AppSync API
 AWS_REGION=${AWS_REGION:-eu-west-1}
-export APIID=`aws appsync create-graphql-api \
+APIID=`aws appsync create-graphql-api \
     --name BookingAPI \
     --authentication-type AMAZON_COGNITO_USER_POOLS \
     --user-pool-config userPoolId=$COGNITOUSERPOOLID,awsRegion=$AWS_REGION,defaultAction=DENY \
@@ -56,8 +67,8 @@ aws appsync start-schema-creation \
     --no-cli-pager
 
 # Prime Web config
-export GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
-sed "s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g" < aws-exports.js > web/aws-exports.js
+GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
+sed "s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
 clear

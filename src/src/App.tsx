@@ -1,31 +1,79 @@
-import logo from './logo.svg';
 import './App.css';
 import {
     Auth,
 } from 'aws-amplify';
+import { Box, Button, Container, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { AmplifyUser } from '@aws-amplify/ui';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SignIn from './pages/signin';
 
 interface IProps {
     auth: (typeof Auth);
 }
 
 const App = (props: IProps): JSX.Element => {
+
+    const [user, setUser] = useState<AmplifyUser | undefined | null>();
+
+    //  Hydrate user
+    useEffect(() => {
+        props.auth.currentAuthenticatedUser()
+            .then((user) => {
+
+                //  Inspect groups
+                if ('cognito:groups' in user.signInUserSession.idToken.payload) {
+                }
+
+                // Set user identity
+                setUser(user);
+
+                // Deal with refresh token
+                props.auth.currentSession();
+            })
+            .catch(
+                () => {
+                    setUser(null);
+                }
+            );
+
+    }, [props.auth]);
+
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.tsx</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                {
+                    user &&
+                    <Route path="/*" element={
+                        <Container maxWidth="sm">
+                            <Box sx={{ my: 4 }}>
+                                <Typography variant="h4" component="h1" gutterBottom>
+                                    GraphQL workshop<br/>Webstep Solutions 2023
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    onClick={
+                                        () => {
+                                            props.auth.signOut()
+                                        }
+                                    }
+                                >
+                                    Sign Out
+                                </Button>
+                            </Box>
+                        </Container>
+                    }>
+                    </Route>
+                }
+                {
+                    !user &&
+                    <Route path="/*" element={
+                        <SignIn auth={props.auth} user={user} />
+                    } />
+                }
+
+            </Routes>
+        </BrowserRouter>
     );
 }
 

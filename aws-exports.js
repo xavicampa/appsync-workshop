@@ -4,7 +4,7 @@ const awsconfig = {
     aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS',
     Auth: {
         oauth: {
-            domain: 'auth.dev.aidee.io',
+            domain: '%COGNITODOMAIN%',
             scope: ['openid', 'profile', 'aws.cognito.signin.user.admin'],
             redirectSignIn: 'http://localhost:3000/signIn',
             redirectSignOut: 'http://localhost:3000/signOut',
