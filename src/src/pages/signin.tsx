@@ -17,15 +17,13 @@ const SignIn = (props: IProps): JSX.Element => {
 
     const navigate = useNavigate();
 
-    const { user } = props;
-
     useEffect(() => {
         setLoading(props.user === undefined);
         if (props.user) {
             console.log(props.user);
             navigate('/');
         }
-    }, [user, navigate]);
+    }, [props.user, navigate]);
 
     return (
         <Container maxWidth="sm">
