@@ -2,6 +2,12 @@
 # Cognito userpool
 export COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
 
+# Cognito web client
+export WEBCLIENTID=`aws cognito-idp create-user-pool-client \
+    --user-pool-id $COGNITOUSERPOOLID \
+    --callback-url http://localhost:3000/signIn \
+    --client-name web | jq -r .UserPoolClient.ClientId`
+
 # Cognito users
 aws cognito-idp admin-create-user \
     --user-pool-id $COGNITOUSERPOOLID \
@@ -45,3 +51,14 @@ aws appsync start-schema-creation \
     --api-id $APIID \
     --definition `base64 < schema.graphql` \
     --no-cli-pager
+
+# Prime Web config
+export GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
+sed "s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g" < src/public/aws-exports.js > web/aws-exports.js
+
+clear
+echo Cognito UserPool Id: $COGNITOUSERPOOLID
+echo Web Client: $WEBCLIENTID
+echo GraphQL API URL: $GRAPHQLAPIURL
+echo Admin web credential: admin:Admin1234!
+echo Guest web credential: guest:Guest1234!
