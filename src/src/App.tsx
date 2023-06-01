@@ -2,11 +2,14 @@ import './App.css';
 import {
     Auth,
 } from 'aws-amplify';
-import { Box, Button, Container, Typography } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { AmplifyUser } from '@aws-amplify/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import Layout from './components/layout';
 import SignIn from './pages/signin';
+import Home from './pages/home';
 
 interface IProps {
     auth: (typeof Auth);
@@ -15,6 +18,8 @@ interface IProps {
 const App = (props: IProps): JSX.Element => {
 
     const [user, setUser] = useState<AmplifyUser | undefined | null>();
+
+    const defaultTheme = createTheme();
 
     //  Hydrate user
     useEffect(() => {
@@ -40,40 +45,31 @@ const App = (props: IProps): JSX.Element => {
     }, [props.auth]);
 
     return (
-        <BrowserRouter>
-            <Routes>
-                {
-                    user &&
-                    <Route path="/*" element={
-                        <Container maxWidth="sm">
-                            <Box sx={{ my: 4 }}>
-                                <Typography variant="h4" component="h1" gutterBottom>
-                                    GraphQL workshop<br/>Webstep Solutions 2023
-                                </Typography>
-                                <Button
-                                    variant="contained"
-                                    onClick={
-                                        () => {
-                                            props.auth.signOut()
-                                        }
-                                    }
-                                >
-                                    Sign Out
-                                </Button>
-                            </Box>
-                        </Container>
-                    }>
-                    </Route>
-                }
-                {
-                    !user &&
-                    <Route path="/*" element={
-                        <SignIn auth={props.auth} user={user} />
-                    } />
-                }
+        <ThemeProvider theme={defaultTheme}>
+            <BrowserRouter>
+                <Routes>
+                    {
+                        user &&
+                        <Route path="/*" element={
+                            <Layout auth={props.auth} user={user} />
+                        }>
 
-            </Routes>
-        </BrowserRouter>
+                            <Route path="*" element={
+                                <Home auth={props.auth} user={user} />
+                            }>
+                            </Route>
+                        </Route>
+                    }
+                    {
+                        !user &&
+                        <Route path="/*" element={
+                            <SignIn auth={props.auth} user={user} />
+                        } />
+                    }
+
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider >
     );
 }
 
