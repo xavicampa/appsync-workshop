@@ -16,6 +16,8 @@ aws secretsmanager delete-secret --secret-id /workshop/hotelinventory-db-manager
 aws secretsmanager delete-secret --secret-id /workshop/hotelinventory-db-roomview-$DELETEID --query Name --output text
 echo "Secrets deleted"
 
+aws cloudformation delete-stack --stack-name appsyncworkshop
+
 echo "Deleting database..."
 aws rds delete-db-cluster --db-cluster-identifier hotelinventory-$DELETEID --skip-final-snapshot --query DBCluster.DBClusterIdentifier --output text
 

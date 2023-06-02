@@ -2,6 +2,24 @@
 # clean-up
 bash cleanup.sh
 
+
+#  MAKING DB-environment 1
+
+echo "Creating db-secrets"
+DBPASSWORD=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
+DBPASSWORDARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-manager-$$ --secret-string '{"password": "'$DBPASSWORD'","username": "manager"}' --query ARN --output text`
+DBPASSWORDREADER=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
+DBPASSWORDREADERARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-roomview-$$ --secret-string '{"password": "'$DBPASSWORDREADER'","username": "roomview"}' --query ARN --output text`
+
+
+echo "Creating database cluster"
+DBCLUSTERARN=`aws rds create-db-cluster --db-cluster-identifier hotelinventory-$$ --enable-http-endpoint \
+--master-username manager --master-user-password $DBPASSWORD --engine aurora-mysql --engine-mode serverless --engine-version 5.7.2 \
+--scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=300 --query DBCluster.DBClusterArn --output text` || exit
+
+aws cloudformation create-stack --stack-name "appsyncworkshop" --template-body file://setup/cloudformation.yaml  --capabilities CAPABILITY_NAMED_IAM
+
+echo "Creating GraphQL and users"
 # Cognito userpool
 COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
 
@@ -71,21 +89,11 @@ GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uri
 sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
+aws cloudformation wait stack-create-complete --stack-name "appsyncworkshop"
 
-#  MAKING DB-environment
+#  MAKING DB-environment 2
 
-echo "Creating db-secrets"
-DBPASSWORD=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
-DBPASSWORDARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-manager-$$ --secret-string '{"password": "'$DBPASSWORD'","username": "manager"}' --query ARN --output text`
-DBPASSWORDREADER=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
-DBPASSWORDREADERARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-roomview-$$ --secret-string '{"password": "'$DBPASSWORDREADER'","username": "roomview"}' --query ARN --output text`
-
-
-echo "Creating database cluster"
-DBCLUSTERARN=`aws rds create-db-cluster --db-cluster-identifier hotelinventory-$$ --enable-http-endpoint \
---master-username manager --master-user-password $DBPASSWORD --engine aurora-mysql --engine-mode serverless --engine-version 5.7.2 \
---scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=300 --query DBCluster.DBClusterArn --output text` || exit
-
+echio "Waiting for database"
 aws rds wait db-cluster-available --db-cluster-identifier hotelinventory-$$ > /dev/null
 echo "Database cluster created"
 
@@ -97,12 +105,10 @@ while read p; do
 done <mysql.sql
 echo "Data populated"
 
-#
-# TODO - create role and link
-#
-#aws appsync create-data-source --name workshop-$$ --api-id $APIID --type RELATIONAL_DATABASE \
-#--relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
-#--service-role arn:aws:iam::699052885502:role/service-role/appsync-ds-rds-xz9NX2eNFbZO-cluster-2
+
+aws appsync create-data-source --name workshop$$ --api-id $APIID --type RELATIONAL_DATABASE \
+--relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
+--service-role arn:aws:iam::$AWS_ACCOUNT:role/service-role/appsync-workshop-databaserole
 
 
 echo " "
