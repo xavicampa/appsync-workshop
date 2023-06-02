@@ -1,5 +1,5 @@
 #/bin/bash
-echo Enter ID to delete:
+echo Enter ID to delete resources:
 read DELETEID
 
 echo "Deleting secrets..."

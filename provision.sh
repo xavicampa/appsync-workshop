@@ -60,10 +60,10 @@ APIID=`aws appsync create-graphql-api \
     --name BookingAPI \
     --authentication-type AMAZON_COGNITO_USER_POOLS \
     --user-pool-config userPoolId=$COGNITOUSERPOOLID,awsRegion=$AWS_REGION,defaultAction=DENY \
-    --no-cli-pager | jq -r .graphqlApi.apiId`
+    --no-cli-pager | jq -r .graphqlApi.apiId` 
 aws appsync start-schema-creation \
     --api-id $APIID \
-    --definition `base64 < schema.graphql` \
+    --definition "`base64 < schema.graphql`" \
     --no-cli-pager
 
 # Prime Web config
@@ -71,9 +71,53 @@ GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uri
 sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
-clear
+
+#  MAKING DB-environment
+
+echo "Creating db-secrets"
+DBPASSWORD=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
+DBPASSWORDARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-manager-$$ --secret-string '{"password": "'$DBPASSWORD'","username": "manager"}' --query ARN --output text`
+DBPASSWORDREADER=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
+DBPASSWORDREADERARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-roomview-$$ --secret-string '{"password": "'$DBPASSWORDREADER'","username": "roomview"}' --query ARN --output text`
+
+
+echo "Creating database cluster"
+DBCLUSTERARN=`aws rds create-db-cluster --db-cluster-identifier hotelinventory-$$ --enable-http-endpoint \
+--master-username manager --master-user-password $DBPASSWORD --engine aurora-mysql --engine-mode serverless --engine-version 5.7.2 \
+--scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=300 --query DBCluster.DBClusterArn --output text` || exit
+
+aws rds wait db-cluster-available --db-cluster-identifier hotelinventory-$$ > /dev/null
+echo "Database cluster created"
+
+aws rds-data execute-statement --resource-arn $DBCLUSTERARN --secret-arn $DBPASSWORDARN --sql "CREATE USER 'roomview'@'%' IDENTIFIED BY '$DBPASSWORDREADER';" > /dev/null
+echo "User created, populating data"
+while read p; do
+ aws rds-data execute-statement --resource-arn $DBCLUSTERARN --secret-arn $DBPASSWORDARN --sql "$p" > /dev/null
+ echo -n "."
+done <mysql.sql
+echo "Data populated"
+
+#
+# TODO - create role and link
+#
+#aws appsync create-data-source --name workshop-$$ --api-id $APIID --type RELATIONAL_DATABASE \
+#--relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
+#--service-role arn:aws:iam::699052885502:role/service-role/appsync-ds-rds-xz9NX2eNFbZO-cluster-2
+
+
+echo " "
+echo "==========================="
+echo " "
 echo Cognito UserPool Id: $COGNITOUSERPOOLID
 echo Web Client: $WEBCLIENTID
 echo GraphQL API URL: $GRAPHQLAPIURL
 echo Admin web credential: admin:Admin1234!
 echo Guest web credential: guest:Guest1234!
+echo Instance ID when deleting later: $$
+echo " "
+echo "Refrence for secrets manager for DB-admin:"
+echo $DBPASSWORDARN
+echo " "
+echo "Refrence for secrets manager for DB-readonly (API):"
+echo $DBPASSWORDREADERARN
+echo "==========================="

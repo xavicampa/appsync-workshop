@@ -1,0 +1,44 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds-data:ExecuteStatement",
+                "rds-data:DeleteItems",
+                "rds-data:ExecuteSql",
+                "rds-data:GetItems",
+                "rds-data:InsertItems",
+                "rds-data:UpdateItems"
+            ],
+            "Resource": [
+                "arn:aws:rds:eu-west-1:*:cluster:*",
+                "arn:aws:rds:eu-west-1:*:cluster:*:*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:eu-west-1:*:secret:appsync/workshop/hotelinventory-db-*",
+                "arn:aws:secretsmanager:eu-west-1:*:secret:appsync//workshop/hotelinventory-db-:*"
+            ]
+        }
+    ]
+}
+
+### TRUST RELATIONSHOP
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "appsync.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
