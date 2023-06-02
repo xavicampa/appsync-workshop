@@ -15,18 +15,19 @@ DBCLUSTERARN=`aws rds create-db-cluster --db-cluster-identifier hotelinventory-$
 aws rds wait db-cluster-available --db-cluster-identifier hotelinventory-$1 > /dev/null
 echo "Database cluster created"
 
-aws rds-data execute-statement --resource-arn $DBCLUSTERARN --secret-arn $DBPASSWORDARN --sql "CREATE USER 'roomview'@'%' IDENTIFIED BY '$DBPASSWORDREADER';"
+aws rds-data execute-statement --resource-arn $DBCLUSTERARN --secret-arn $DBPASSWORDARN --sql "CREATE USER 'roomview'@'%' IDENTIFIED BY '$DBPASSWORDREADER';" > /dev/null
 echo "User created, populating data"
 while read p; do
  aws rds-data execute-statement --resource-arn $DBCLUSTERARN --secret-arn $DBPASSWORDARN --sql "$p" > /dev/null
  echo -n "."
 done <mysql.sql
 echo "Data populated"
-
-
-echo "NOTE!!!"
+echo " "
+echo "==========================="
+echo " "
 echo "Refrence for secrets manager for admin:"
 echo $DBPASSWORDARN
+echo " "
 echo "Refrence for secrets manager for readonly (API):"
 echo $DBPASSWORDREADERARN
-
+echo "==========================="
