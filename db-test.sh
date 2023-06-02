@@ -4,7 +4,7 @@ echo "Creating db-secrets"
 DBPASSWORD=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
 DBPASSWORDARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-manager-$1 --secret-string '{"password": "'$DBPASSWORD'","username": "manager"}' --query ARN --output text`
 DBPASSWORDREADER=`aws secretsmanager get-random-password  --password-length 16 --query RandomPassword --exclude-punctuation --output text`
-DBPASSWORDREADERARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-roomview-$1 --secret-string '{"password": "'$DBPASSWORD'","username": "roomview"}' --query ARN --output text`
+DBPASSWORDREADERARN=`aws secretsmanager create-secret --name /workshop/hotelinventory-db-roomview-$1 --secret-string '{"password": "'$DBPASSWORDREADER'","username": "roomview"}' --query ARN --output text`
 
 
 echo "Creating database cluster"
@@ -30,16 +30,3 @@ echo $DBPASSWORDARN
 echo "Refrence for secrets manager for readonly (API):"
 echo $DBPASSWORDREADERARN
 
-
-------
-#CLEANUP 
-#/bin/bash
-echo "Deleting database..."
-aws rds delete-db-cluster --db-cluster-identifier hotelinventory-$1 --skip-final-snapshot --query DBCluster.Status
-aws rds wait db-cluster-deleted --db-cluster-identifier hotelinventory-$1
-
-echo "Database deleted"
-echo "Deleting secrets..."
-aws secretsmanager delete-secret --secret-id /workshop/hotelinventory-db-manager-$1 --query Name --output text
-aws secretsmanager delete-secret --secret-id /workshop/hotelinventory-db-roomview-$1 --query Name --output text
-echo "Secrets deleted"
