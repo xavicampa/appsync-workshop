@@ -22,7 +22,7 @@ while read p; do
  echo -n "."
 done <mysql.sql
 echo "Data populated"
-exit
+
 
 echo "NOTE!!!"
 echo "Refrence for secrets manager for admin:"
