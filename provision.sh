@@ -14,8 +14,8 @@ COGNITODOMAIN=`aws cognito-idp create-user-pool-domain \
 # Cognito web client
 WEBCLIENTID=`aws cognito-idp create-user-pool-client \
     --user-pool-id $COGNITOUSERPOOLID \
-    --callback-urls http://localhost:3000/signIn \
-    --logout-urls http://localhost:3000/signOut \
+    --callback-urls http://localhost:3000/ \
+    --logout-urls http://localhost:3000/ \
     --supported-identity-providers COGNITO \
     --allowed-o-auth-flows-user-pool-client \
     --allowed-o-auth-flows code \
@@ -68,7 +68,7 @@ aws appsync start-schema-creation \
 
 # Prime Web config
 GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
-sed "s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
+sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
 clear

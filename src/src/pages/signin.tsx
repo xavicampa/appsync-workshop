@@ -73,22 +73,4 @@ const SignIn = (props: IProps): JSX.Element => {
     );
 };
 
-{/* <Box sx={{ my: 4 }}> */ }
-{/*     <Typography variant="h4" component="h1" gutterBottom> */ }
-{/*         GraphQL workshop<br />Webstep Solutions 2023 */ }
-{/*     </Typography> */ }
-{/*     <Button */ }
-{/*         variant="contained" */ }
-{/*         onClick={ */ }
-{/*             () => { */ }
-{/*                 setLoading(true); */ }
-{/*                 props.auth.federatedSignIn() */ }
-{/*                     .then(() => setLoading(true)); */ }
-{/*             } */ }
-{/*         } */ }
-{/*     > */ }
-{/*         Sign In */ }
-{/*     </Button> */ }
-{/* </Box> */ }
-
 export default SignIn;
