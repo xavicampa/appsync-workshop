@@ -1,15 +1,25 @@
 schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
 }
 
 type Query {
-    listBookings: [Booking]!
-    listRooms: [Room]!
+    listBookings: [Booking!]
+        @aws_auth(cognito_groups:["admin","guest"])
+    listRooms: [Room!]
+        @aws_auth(cognito_groups:["admin","guest"])
 }
 
 type Mutation {
     addBooking(start_date: Int!, end_date: Int!, roomid: ID!): Booking
+        @aws_auth(cognito_groups:["admin"])
+}
+
+type Subscription {
+    onBookingUpdates: Booking
+        @aws_subscribe(mutations:["addBooking"])
+        @aws_auth(cognito_groups:["admin","guest"])
 }
 
 type Booking {

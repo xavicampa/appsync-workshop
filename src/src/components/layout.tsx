@@ -1,9 +1,12 @@
 import { AmplifyUser } from '@aws-amplify/ui';
 import { AppBar, Box, Button, CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { Auth } from "aws-amplify";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import GraphQLAPI, { GRAPHQL_AUTH_MODE } from '@aws-amplify/api-graphql';
+import LogoutIcon from '@mui/icons-material/Logout';
+import TocIcon from '@mui/icons-material/Toc';
+import AddIcon from '@mui/icons-material/Add';
+import HomeIcon from '@mui/icons-material/Home';
 
 interface IProps {
     auth: (typeof Auth);
@@ -13,6 +16,18 @@ interface IProps {
 const drawerWidth = 240;
 
 const Layout = (props: IProps): JSX.Element => {
+
+    const navigate = useNavigate();
+
+    function addBooking() {
+        GraphQLAPI.graphql(
+            {
+                query: 'mutation AddBooking { addBooking(end_date: 10, roomid: "a", start_date: 10) { id } }',
+                authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+            }
+        );
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -22,14 +37,15 @@ const Layout = (props: IProps): JSX.Element => {
                         Book-a-hytte
                     </Typography>
                     <Button
-                        variant="contained"
+                        color="error"
                         onClick={
                             () => {
                                 props.auth.signOut()
                             }
                         }
+                        variant="contained"
                     >
-                        Sign Out
+                        <LogoutIcon />
                     </Button>
                 </Toolbar>
             </AppBar>
@@ -44,16 +60,30 @@ const Layout = (props: IProps): JSX.Element => {
                 <Toolbar />
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
-                        {['Booking', 'Something else'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                        <ListItem key='Home' disablePadding>
+                            <ListItemButton onClick={() => navigate('/')} >
+                                <ListItemIcon>
+                                    <HomeIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Home' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key='Bookings' disablePadding>
+                            <ListItemButton onClick={() => navigate('/bookings')} >
+                                <ListItemIcon>
+                                    <TocIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Bookings' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key='New booking...' disablePadding>
+                            <ListItemButton onClick={() => addBooking()} >
+                                <ListItemIcon>
+                                    <AddIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='New booking...' />
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </Box>
             </Drawer>

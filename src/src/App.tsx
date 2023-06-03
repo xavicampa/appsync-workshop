@@ -8,8 +8,10 @@ import { AmplifyUser } from '@aws-amplify/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Layout from './components/layout';
-import SignIn from './pages/signin';
+
+import Bookings from './pages/bookings';
 import Home from './pages/home';
+import SignIn from './pages/signin';
 
 interface IProps {
     auth: (typeof Auth);
@@ -54,8 +56,12 @@ const App = (props: IProps): JSX.Element => {
                             <Layout auth={props.auth} user={user} />
                         }>
 
-                            <Route path="*" element={
+                            <Route path="" element={
                                 <Home auth={props.auth} user={user} />
+                            }>
+                            </Route>
+                            <Route path="bookings" element={
+                                <Bookings auth={props.auth} user={user} />
                             }>
                             </Route>
                         </Route>

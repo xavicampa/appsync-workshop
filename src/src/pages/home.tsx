@@ -15,7 +15,7 @@ const Home = (_props: IProps): JSX.Element => {
         <Container maxWidth="sm">
             <Box sx={{ my: 4 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    GraphQL workshop<br />Webstep Solutions 2023
+                    GraphQL workshop
                 </Typography>
             </Box>
         </Container>

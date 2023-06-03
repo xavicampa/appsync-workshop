@@ -55,6 +55,7 @@ const SignIn = (props: IProps): JSX.Element => {
                             On first sign in, use the credentials provided by the provisioning script.
                         </Alert>
                         <Button
+                            color="success"
                             variant="contained"
                             onClick={
                                 () => {
