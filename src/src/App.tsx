@@ -11,6 +11,7 @@ import Layout from './components/layout';
 
 import Bookings from './pages/bookings';
 import Home from './pages/home';
+import Rooms from './pages/rooms';
 import SignIn from './pages/signin';
 
 interface IProps {
@@ -58,6 +59,10 @@ const App = (props: IProps): JSX.Element => {
 
                             <Route path="" element={
                                 <Home auth={props.auth} user={user} />
+                            }>
+                            </Route>
+                            <Route path="rooms" element={
+                                <Rooms auth={props.auth} user={user} />
                             }>
                             </Route>
                             <Route path="bookings" element={

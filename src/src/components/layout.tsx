@@ -1,12 +1,13 @@
 import { AmplifyUser } from '@aws-amplify/ui';
 import { AppBar, Box, Button, CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
 import { Auth } from "aws-amplify";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useNavigation, useRoutes } from "react-router-dom";
 import GraphQLAPI, { GRAPHQL_AUTH_MODE } from '@aws-amplify/api-graphql';
 import LogoutIcon from '@mui/icons-material/Logout';
 import TocIcon from '@mui/icons-material/Toc';
 import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
+import BedIcon from '@mui/icons-material/Bed';
 
 interface IProps {
     auth: (typeof Auth);
@@ -17,6 +18,7 @@ const drawerWidth = 240;
 
 const Layout = (props: IProps): JSX.Element => {
 
+    const location = useLocation();
     const navigate = useNavigate();
 
     function addBooking() {
@@ -61,15 +63,32 @@ const Layout = (props: IProps): JSX.Element => {
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
                         <ListItem key='Home' disablePadding>
-                            <ListItemButton onClick={() => navigate('/')} >
+                            <ListItemButton
+                                onClick={() => navigate('/')}
+                                selected={location.pathname === '/'}
+                            >
                                 <ListItemIcon>
                                     <HomeIcon />
                                 </ListItemIcon>
                                 <ListItemText primary='Home' />
                             </ListItemButton>
                         </ListItem>
+                        <ListItem key='Rooms' disablePadding>
+                            <ListItemButton
+                                onClick={() => navigate('/rooms')}
+                                selected={location.pathname === '/rooms'}
+                            >
+                                <ListItemIcon>
+                                    <BedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Rooms' />
+                            </ListItemButton>
+                        </ListItem>
                         <ListItem key='Bookings' disablePadding>
-                            <ListItemButton onClick={() => navigate('/bookings')} >
+                            <ListItemButton
+                                onClick={() => navigate('/bookings')}
+                                selected={location.pathname === '/bookings'}
+                            >
                                 <ListItemIcon>
                                     <TocIcon />
                                 </ListItemIcon>

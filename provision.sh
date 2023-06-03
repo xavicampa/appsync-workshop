@@ -174,11 +174,22 @@ done <mysql.sql
 echo "Data populated"
 
 
-aws appsync create-data-source --name workshop$$ --api-id $APIID --type RELATIONAL_DATABASE \
+# SQL datasource and resolvers
+aws appsync create-data-source \
+    --name RoomsDataSource \
+    --api-id $APIID \
+    --type RELATIONAL_DATABASE \
     --relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
-    --service-role arn:aws:iam::$AWS_ACCOUNT:role/service-role/appsync-workshop-databaserole \
+    --service-role arn:aws:iam::$AWS_ACCOUNT:role/appsync-workshop-databaserole \
     --no-cli-pager
-
+aws appsync create-resolver \
+    --field-name listRooms \
+    --type-name Query \
+    --api-id $APIID \
+    --data-source-name RoomsDataSource \
+    --request-mapping-template "`cat appsync/resolvers/listRooms-req.vtl`" \
+    --response-mapping-template "`cat appsync/resolvers/listRooms-resp.vtl`" \
+    --no-cli-pager
 
 echo " "
 echo "==========================="

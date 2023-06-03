@@ -35,10 +35,6 @@ type Booking {
 
 type Room {
     id: ID!
-    type: RoomType!
-}
-
-enum RoomType {
-    DOUBLE,
-    SINGLE
+    beds: Int!
+    price: Int!
 }
