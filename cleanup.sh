@@ -9,7 +9,9 @@ aws appsync delete-graphql-api --api-id $APIID
 
 echo "Deleting Bookings table..."
 aws dynamodb delete-table --table-name Bookings --no-cli-pager
-aws iam delete-role-policy --role-name appsync-workshop-appsync-dynamodb-role --policy-name Permissions-Policy-For-AppSync
+aws iam delete-role-policy \
+    --role-name appsync-workshop-appsync-dynamodb-role \
+    --policy-name Permissions-Policy-For-AppSync
 aws iam delete-role --role-name appsync-workshop-appsync-dynamodb-role --no-cli-pager
 
 echo "Deleting user pool..."

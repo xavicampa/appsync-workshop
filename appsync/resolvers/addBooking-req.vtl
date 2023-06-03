@@ -1,0 +1,9 @@
+{
+    "version": "2017-02-28",
+    "operation": "PutItem",
+    "key": {
+        "guest": { "S": "$ctx.identity.sub" },
+        "id": { "S": "$ctx.args.roomid#$ctx.args.start_date#$ctx.args.end_date" },
+    },
+    "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args)
+}

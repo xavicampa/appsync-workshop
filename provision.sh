@@ -106,8 +106,8 @@ cp web/aws-exports.js src/public/aws-exports.js
 echo "Creating Bookings table"
 aws dynamodb create-table \
     --table-name Bookings \
-    --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \
-    --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
+    --attribute-definitions AttributeName=guest,AttributeType=S AttributeName=id,AttributeType=S \
+    --key-schema AttributeName=guest,KeyType=HASH AttributeName=id,KeyType=RANGE \
     --billing-mode PAY_PER_REQUEST \
     --no-cli-pager 
 
@@ -136,6 +136,14 @@ aws appsync create-resolver \
     --data-source-name BookingsDataSource \
     --request-mapping-template "`cat appsync/resolvers/listBookings-req.vtl`" \
     --response-mapping-template "`cat appsync/resolvers/listBookings-resp.vtl`" \
+    --no-cli-pager
+aws appsync create-resolver \
+    --field-name addBooking \
+    --type-name Mutation \
+    --api-id $APIID \
+    --data-source-name BookingsDataSource \
+    --request-mapping-template "`cat appsync/resolvers/addBooking-req.vtl`" \
+    --response-mapping-template "`cat appsync/resolvers/addBooking-resp.vtl`" \
     --no-cli-pager
 
 # Wait for CFN to be COMPLETE

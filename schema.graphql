@@ -23,11 +23,12 @@ type Subscription {
 }
 
 type Booking {
-    id: ID!
-    start_date: Int!
     end_date: Int!
+    guest: String!
+    id: ID!
     room: Room
     roomid: ID!
+    start_date: Int!
 }
 
 type Room {
