@@ -21,7 +21,7 @@ async function subscribeToBookingUpdates(): Promise<GraphQLResult<any> | Observa
 
 const Bookings = (_props: IProps): JSX.Element => {
 
-    const [bookings, setBookings] = useState<any[]>([]);
+    const [bookings, setBookings] = useState<[]>();
 
     async function fetchBookings() {
         const response = await GraphQLAPI.graphql(
@@ -31,7 +31,7 @@ const Bookings = (_props: IProps): JSX.Element => {
             }
         ) as GraphQLResult<any>;
 
-        setBookings(response.data.listBookings);
+        setBookings(response.data?.listBookings);
     }
 
     useEffect(() => {

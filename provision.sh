@@ -13,13 +13,25 @@ DBPASSWORDREADERARN=`aws secretsmanager create-secret --name /workshop/hotelinve
 
 
 echo "Creating database cluster"
-DBCLUSTERARN=`aws rds create-db-cluster --db-cluster-identifier hotelinventory-$$ --enable-http-endpoint \
---master-username manager --master-user-password $DBPASSWORD --engine aurora-mysql --engine-mode serverless --engine-version 5.7.2 \
---scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=300 --query DBCluster.DBClusterArn --output text` || exit
+DBCLUSTERARN=`aws rds create-db-cluster \
+    --db-cluster-identifier hotelinventory-$$ \
+    --enable-http-endpoint \
+    --master-username manager \
+    --master-user-password $DBPASSWORD \
+    --engine aurora-mysql \
+    --engine-mode serverless \
+    --engine-version 5.7.2 \
+    --scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=300 \
+    --query DBCluster.DBClusterArn \
+    --output text` || exit
 
-aws cloudformation create-stack --stack-name "appsyncworkshop" --template-body file://setup/cloudformation.yaml  --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation create-stack \
+    --stack-name "appsyncworkshop" \
+    --template-body file://setup/cloudformation.yaml  \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --no-cli-pager
 
-echo "Creating GraphQL and users"
+echo "Creating user pool"
 # Cognito userpool
 COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
 
@@ -73,6 +85,7 @@ aws cognito-idp admin-add-user-to-group \
     --no-cli-pager
 
 # AppSync API
+echo "Creating GraphQL API"
 AWS_REGION=${AWS_REGION:-eu-west-1}
 APIID=`aws appsync create-graphql-api \
     --name BookingAPI \
@@ -89,11 +102,50 @@ GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uri
 sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
-aws cloudformation wait stack-create-complete --stack-name "appsyncworkshop"
+# DynamoDB
+echo "Creating Bookings table"
+aws dynamodb create-table \
+    --table-name Bookings \
+    --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \
+    --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
+    --billing-mode PAY_PER_REQUEST \
+    --no-cli-pager 
+
+# Data sources and resolvers
+echo "Creating Bookings data source and resolvers"
+APPSYNC_ROLE_ARN=`aws iam create-role \
+    --role-name appsync-workshop-appsync-dynamodb-role \
+    --assume-role-policy-document file://appsync/role-assume-policy.json \
+    --no-cli-pager | jq -r .Role.Arn`
+aws iam put-role-policy \
+    --role-name appsync-workshop-appsync-dynamodb-role \
+    --policy-name Permissions-Policy-For-AppSync \
+    --policy-document "`sed "s|%AWS_REGION%|$AWS_REGION|g;s|%AWS_ACCOUNT%|$AWS_ACCOUNT|g" < appsync/role-policy.json`" \
+    --no-cli-pager
+aws appsync create-data-source \
+    --api-id $APIID \
+    --name BookingsDataSource \
+    --type AMAZON_DYNAMODB \
+    --dynamodb-config tableName=Bookings,awsRegion=$AWS_REGION,useCallerCredentials=FALSE,versioned=FALSE \
+    --service-role-arn $APPSYNC_ROLE_ARN \
+    --no-cli-pager
+aws appsync create-resolver \
+    --field-name listBookings \
+    --type-name Query \
+    --api-id $APIID \
+    --data-source-name BookingsDataSource \
+    --request-mapping-template "`cat appsync/resolvers/listBookings-req.vtl`" \
+    --response-mapping-template "`cat appsync/resolvers/listBookings-resp.vtl`" \
+    --no-cli-pager
+
+# Wait for CFN to be COMPLETE
+aws cloudformation wait stack-create-complete \
+    --stack-name "appsyncworkshop" \
+    --no-cli-pager
 
 #  MAKING DB-environment 2
 
-echio "Waiting for database"
+echo "Waiting for database"
 aws rds wait db-cluster-available --db-cluster-identifier hotelinventory-$$ > /dev/null
 echo "Database cluster created"
 
@@ -107,8 +159,9 @@ echo "Data populated"
 
 
 aws appsync create-data-source --name workshop$$ --api-id $APIID --type RELATIONAL_DATABASE \
---relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
---service-role arn:aws:iam::$AWS_ACCOUNT:role/service-role/appsync-workshop-databaserole
+    --relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
+    --service-role arn:aws:iam::$AWS_ACCOUNT:role/service-role/appsync-workshop-databaserole \
+    --no-cli-pager
 
 
 echo " "
