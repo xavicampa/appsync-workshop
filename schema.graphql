@@ -14,11 +14,13 @@ type Query {
 type Mutation {
     addBooking(start_date: Int!, end_date: Int!, roomid: ID!): Booking
         @aws_auth(cognito_groups:["admin"])
+    removeBooking(guest: ID!, id: ID!): Booking
+        @aws_auth(cognito_groups:["admin"])
 }
 
 type Subscription {
     onBookingUpdates: Booking
-        @aws_subscribe(mutations:["addBooking"])
+        @aws_subscribe(mutations:["addBooking","removeBooking"])
         @aws_auth(cognito_groups:["admin","guest"])
 }
 

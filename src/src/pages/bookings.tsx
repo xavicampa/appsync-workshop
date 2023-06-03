@@ -2,8 +2,9 @@ import { AmplifyUser } from "@aws-amplify/ui";
 import { Auth } from "aws-amplify";
 import { useEffect, useState } from "react";
 import GraphQLAPI, { GraphQLResult, GRAPHQL_AUTH_MODE } from '@aws-amplify/api-graphql';
-import { Box, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Observable, Subscription } from "rxjs";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface IProps {
     auth: (typeof Auth);
@@ -23,10 +24,21 @@ const Bookings = (_props: IProps): JSX.Element => {
 
     const [bookings, setBookings] = useState<any[]>([]);
 
+    async function removeBooking(guest: string, id: string) {
+        const response = await GraphQLAPI.graphql(
+            {
+                query: 'mutation RemoveBooking($guest:ID!,$id:ID!) { removeBooking(guest:$guest,id:$id) { id } }',
+                authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+                variables: { id: id, guest: guest }
+            }
+        ) as GraphQLResult<any>;
+
+        setBookings(response.data?.removeBooking);
+    }
     async function fetchBookings() {
         const response = await GraphQLAPI.graphql(
             {
-                query: 'query listBookings { listBookings { guest, id, start_date, end_date, roomid } }',
+                query: 'query ListBookings { listBookings { guest, id, start_date, end_date, roomid } }',
                 authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
             }
         ) as GraphQLResult<any>;
@@ -81,6 +93,7 @@ const Bookings = (_props: IProps): JSX.Element => {
                                     <TableCell align="right">Room</TableCell>
                                     <TableCell align="right">Check-in</TableCell>
                                     <TableCell align="right">Check-out</TableCell>
+                                    <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -96,6 +109,18 @@ const Bookings = (_props: IProps): JSX.Element => {
                                             <TableCell align="right">{booking.roomid}</TableCell>
                                             <TableCell align="right">{booking.start_date}</TableCell>
                                             <TableCell align="right">{booking.end_date}</TableCell>
+                                            <TableCell align="right">
+                                                <Button
+                                                    color="error"
+                                                    onClick={
+                                                        () => {
+                                                            removeBooking(booking.guest, booking.id)
+                                                        }
+                                                    }
+                                                >
+                                                    <DeleteIcon />
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                             </TableBody>
@@ -103,9 +128,9 @@ const Bookings = (_props: IProps): JSX.Element => {
                     </TableContainer>
                 }
                 {
-                    !bookings || bookings.length === 0 &&
+                    (!bookings || bookings.length === 0) &&
                     <Typography variant="h5" component="h1" gutterBottom>
-                        No bookings yet!
+                        No bookings!
                     </Typography>
                 }
             </Box>

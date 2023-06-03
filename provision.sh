@@ -145,6 +145,14 @@ aws appsync create-resolver \
     --request-mapping-template "`cat appsync/resolvers/addBooking-req.vtl`" \
     --response-mapping-template "`cat appsync/resolvers/addBooking-resp.vtl`" \
     --no-cli-pager
+aws appsync create-resolver \
+    --field-name removeBooking \
+    --type-name Mutation \
+    --api-id $APIID \
+    --data-source-name BookingsDataSource \
+    --request-mapping-template "`cat appsync/resolvers/removeBooking-req.vtl`" \
+    --response-mapping-template "`cat appsync/resolvers/removeBooking-resp.vtl`" \
+    --no-cli-pager
 
 # Wait for CFN to be COMPLETE
 aws cloudformation wait stack-create-complete \
