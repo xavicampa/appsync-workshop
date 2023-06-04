@@ -170,7 +170,7 @@ echo "User created, populating data"
 while read p; do
  aws rds-data execute-statement --resource-arn $DBCLUSTERARN --secret-arn $DBPASSWORDARN --sql "$p" > /dev/null
  echo -n "."
-done <mysql.sql
+done <setup/mysql.sql
 echo "Data populated"
 
 
