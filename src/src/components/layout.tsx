@@ -1,13 +1,14 @@
 import { AmplifyUser } from '@aws-amplify/ui';
 import { AppBar, Box, Button, CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
 import { Auth } from "aws-amplify";
-import { Outlet, useLocation, useNavigate, useNavigation, useRoutes } from "react-router-dom";
-import GraphQLAPI, { GRAPHQL_AUTH_MODE } from '@aws-amplify/api-graphql';
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import TocIcon from '@mui/icons-material/Toc';
 import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
 import BedIcon from '@mui/icons-material/Bed';
+import { useState } from 'react';
+import NewBooking from '../components/new_booking';
 
 interface IProps {
     auth: (typeof Auth);
@@ -21,14 +22,10 @@ const Layout = (props: IProps): JSX.Element => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    function addBooking() {
-        GraphQLAPI.graphql(
-            {
-                query: 'mutation AddBooking { addBooking(end_date: 10, roomid: "a", start_date: 10) { id } }',
-                authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
-            }
-        );
-    }
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -96,7 +93,10 @@ const Layout = (props: IProps): JSX.Element => {
                             </ListItemButton>
                         </ListItem>
                         <ListItem key='New booking...' disablePadding>
-                            <ListItemButton onClick={() => addBooking()} >
+                            <ListItemButton
+                                onClick={handleOpen}
+                                selected={location.pathname === '/new'}
+                            >
                                 <ListItemIcon>
                                     <AddIcon />
                                 </ListItemIcon>
@@ -110,6 +110,8 @@ const Layout = (props: IProps): JSX.Element => {
                 <Toolbar />
                 <Outlet />
             </Box>
+
+            <NewBooking auth={props.auth} user={props.user} open={open} setOpen={setOpen} />
         </Box>
     );
 }

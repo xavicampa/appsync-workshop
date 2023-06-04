@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-    addBooking(start_date: Int!, end_date: Int!, roomid: ID!): Booking
+    addBooking(start_date: String!, end_date: String!, roomid: ID!): Booking
         @aws_auth(cognito_groups:["admin"])
     removeBooking(guest: ID!, id: ID!): Booking
         @aws_auth(cognito_groups:["admin"])
@@ -25,12 +25,12 @@ type Subscription {
 }
 
 type Booking {
-    end_date: Int!
+    end_date: String!
     guest: String!
     id: ID!
     room: Room
     roomid: ID!
-    start_date: Int!
+    start_date: String!
 }
 
 type Room {

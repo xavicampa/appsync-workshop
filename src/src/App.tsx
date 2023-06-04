@@ -59,16 +59,13 @@ const App = (props: IProps): JSX.Element => {
 
                             <Route path="" element={
                                 <Home auth={props.auth} user={user} />
-                            }>
-                            </Route>
+                            } />
                             <Route path="rooms" element={
                                 <Rooms auth={props.auth} user={user} />
-                            }>
-                            </Route>
+                            } />
                             <Route path="bookings" element={
                                 <Bookings auth={props.auth} user={user} />
-                            }>
-                            </Route>
+                            } />
                         </Route>
                     }
                     {
