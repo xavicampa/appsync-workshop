@@ -78,7 +78,7 @@ const Bookings = (_props: IProps): JSX.Element => {
     // }, [bookings]);
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
             <Box sx={{ my: 4 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
                     Bookings
@@ -86,7 +86,7 @@ const Bookings = (_props: IProps): JSX.Element => {
                 {
                     bookings && bookings.length > 0 &&
                     <TableContainer component={Paper}>
-                        <Table aria-label="simple table">
+                        <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Guest</TableCell>
