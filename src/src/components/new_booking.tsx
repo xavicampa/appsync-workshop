@@ -28,13 +28,13 @@ const NewBooking = (props: IProps): JSX.Element => {
             fetchRooms();
     }, [props.open]);
 
-    //DEBUG
-    useEffect(() => {
-        console.log(selectedGuest);
-        console.log(selectedRoom);
-        console.log(selectedStartDate);
-        console.log(selectedEndDate);
-    }, [selectedGuest, selectedRoom, selectedStartDate, selectedEndDate]);
+    // //DEBUG
+    // useEffect(() => {
+    //     console.log(selectedGuest);
+    //     console.log(selectedRoom);
+    //     console.log(selectedStartDate);
+    //     console.log(selectedEndDate);
+    // }, [selectedGuest, selectedRoom, selectedStartDate, selectedEndDate]);
 
     const handleClose = () => {
         setSelectedGuest('');
@@ -72,7 +72,7 @@ const NewBooking = (props: IProps): JSX.Element => {
             }
         ) as Promise<GraphQLResult<any>>)
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             })
             .finally(() => {
                 handleClose();
