@@ -21,8 +21,9 @@ const NewBooking = (props: IProps): JSX.Element => {
     const [selectedEndDate, setSelectedEndDate] = useState<Number | null>(null);
 
     useEffect(() => {
-        fetchRooms();
-    }, []);
+        if (props.open)
+            fetchRooms();
+    }, [props.open]);
 
     // //DEBUG
     // useEffect(() => {
