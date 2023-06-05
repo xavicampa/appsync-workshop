@@ -137,6 +137,20 @@ New mutation, guest auth, no guest parameter, use $ctx.identity.sub for *authori
 ### Observe
 - Updates are not visible without refresh (fix by adding new mutation to subscription)
 
+# Requirement 4
+Display room price (per day) of bookings without issuing extra API calls.
+
+_OPTIONAL: modify frontend to display the new field. Requires NodeJS._
+
+## HOW
+Add `room` field to `Booking` type of type `Room`, add resolver and mapping template
+
+### Test
+- listBookings accepts `room` field and can return its `price`
+
+### Observe
+- The new field requires `@aws_auth` to be added
+
 # Clean up
 Execute `cleanup.sh`, provide the `Instance ID` returned by the `provision.sh` script when asked.
 ```bash

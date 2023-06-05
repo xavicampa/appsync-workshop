@@ -28,8 +28,9 @@ type Booking {
     end_date: String!
     guest: String!
     id: ID!
-    room: Room
     roomid: ID!
+	# room: Room!
+	#     @aws_auth(cognito_groups: ["admin","guest"])
     start_date: String!
 }
 
