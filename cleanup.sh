@@ -1,10 +1,12 @@
 #!/bin/bash
-echo Enter ID to delete resources:
-read DELETEID
 
+read -p "Enter ID to delete resources: " DELETEID
+
+echo " "
 echo "==============="
 echo "Cleaning up"
 echo "==============="
+echo " "
 
 echo "Deleting API..."
 APIID=`aws appsync list-graphql-apis --query "graphqlApis[?name=='BookingAPI'].apiId"|jq -r .[0]`

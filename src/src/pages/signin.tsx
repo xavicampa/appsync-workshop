@@ -2,7 +2,7 @@ import {
     Auth,
 } from 'aws-amplify';
 import { AmplifyUser } from '@aws-amplify/ui';
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Container, CssBaseline, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -43,20 +43,23 @@ const SignIn = (props: IProps): JSX.Element => {
                 }
                 {
                     !loading &&
-                    <>
+                    <Stack
+                        direction="column"
+                        alignItems="center"
+                        spacing={2}
+                    >
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                             <LockOutlinedIcon />
                         </Avatar>
-                        <Typography component="h1" variant="h5">
-                            GraphQL workshop
+                        <Typography component="h1" variant="h3">
+                            Book-a-room
                         </Typography>
                         <Alert
                             severity="info">
-                            On first sign in, use the credentials provided by the provisioning script.
+                            On first sign in, use the credentials provided by the provisioning script!
                         </Alert>
                         <Button
                             color="success"
-                            variant="contained"
                             onClick={
                                 () => {
                                     setLoading(true);
@@ -64,10 +67,11 @@ const SignIn = (props: IProps): JSX.Element => {
                                         .then(() => setLoading(true));
                                 }
                             }
+                            variant="contained"
                         >
                             Sign in
                         </Button>
-                    </>
+                    </Stack>
                 }
             </Box>
         </Container >

@@ -35,7 +35,8 @@ cd appsync-workshop
 bash provision.sh
 
 ```
-    - Pay attention to any errors happening *after* the Provisioning message
+*Pay attention to any errors happening *after* the Provisioning message*
+
 4. Copy the final output of the script into your notepad for later use
 
 ## Option 2: from local shell

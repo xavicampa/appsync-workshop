@@ -1,10 +1,13 @@
 #!/bin/bash
+
 # clean-up
 bash cleanup.sh
 
+echo " "
 echo "============"
 echo "Provisioning"
 echo "============"
+echo " "
 echo "Errors from this point should be reported!"
 echo " "
 
