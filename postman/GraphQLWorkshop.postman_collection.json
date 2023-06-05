@@ -62,6 +62,33 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "listBookings",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query MyQuery {\n  listBookings {\n    id, guest, room { id, price }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{URL}}",
+					"host": [
+						"{{URL}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
