@@ -34,9 +34,9 @@ aws secretsmanager delete-secret \
     --no-cli-pager
 echo "Secrets deleted"
 
-aws cloudformation delete-stack \
-    --stack-name appsyncworkshop \
-    --no-cli-pager
+# aws cloudformation delete-stack \
+#     --stack-name appsyncworkshop \
+#     --no-cli-pager
 
 echo "Deleting database..."
 aws rds delete-db-cluster \

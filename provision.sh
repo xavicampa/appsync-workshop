@@ -25,11 +25,11 @@ DBCLUSTERARN=`aws rds create-db-cluster \
     --query DBCluster.DBClusterArn \
     --output text` || exit
 
-aws cloudformation create-stack \
-    --stack-name "appsyncworkshop" \
-    --template-body file://setup/cloudformation.yaml  \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --no-cli-pager
+# aws cloudformation create-stack \
+#     --stack-name "appsyncworkshop" \
+#     --template-body file://setup/cloudformation.yaml  \
+#     --capabilities CAPABILITY_NAMED_IAM \
+#     --no-cli-pager
 
 echo "Creating user pool"
 # Cognito userpool
@@ -155,9 +155,9 @@ aws appsync create-resolver \
     --no-cli-pager
 
 # Wait for CFN to be COMPLETE
-aws cloudformation wait stack-create-complete \
-    --stack-name "appsyncworkshop" \
-    --no-cli-pager
+# aws cloudformation wait stack-create-complete \
+#     --stack-name "appsyncworkshop" \
+#     --no-cli-pager
 
 #  MAKING DB-environment 2
 
@@ -180,7 +180,7 @@ aws appsync create-data-source \
     --api-id $APIID \
     --type RELATIONAL_DATABASE \
     --relational-database-config '{"relationalDatabaseSourceType":"RDS_HTTP_ENDPOINT","rdsHttpEndpointConfig":{"awsRegion":"eu-west-1","dbClusterIdentifier":"'$DBCLUSTERARN'","databaseName":"hotelinventory","schema":"hotelinventory","awsSecretStoreArn":"'$DBPASSWORDREADERARN'"}}' \
-    --service-role arn:aws:iam::$AWS_ACCOUNT:role/appsync-workshop-databaserole \
+    --service-role $APPSYNC_ROLE_ARN \
     --no-cli-pager
 aws appsync create-resolver \
     --field-name listRooms \
