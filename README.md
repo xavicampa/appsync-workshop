@@ -90,15 +90,17 @@ Once the web is running locally, it should then be possible to visit [http://loc
 Login into the application using the `admin` and `person1` credentials (specified in the output of the `provision.sh` script above). You will be prompted to change password upon the first login of each identity. Use a password that you'll remember (or use a password manager), as you'll have to enter it when changing identities.
 
 # Initial functionality
-The user pool contains two groups, `admin` and `guest`, and two identities, `admin` and `person1`. `admin` user is member of the `admin` group, `person1` is member of the `guest`group.
+The user pool contains two groups, `admin` and `guest`, and three identities, `admin`, `person1` and `person2`. `admin` user is member of the `admin` group, `person1` is member of the `guest` group, `person2` does not belong to any groups.
 
-Authorization is defined so that only `admin` members can manage bookings, having to specify guest, dates and room for the operations. `guest` members identities can only view.
+Authorization is defined so that only `admin` members can manage bookings, having to specify guest, dates and room for the operations. `guest` members identities can only view. Users without memberships cannot access any operations.
 
 Test the following:
-- Listing rooms and bookins as `admin` and `person1` both work
-- Adding a booking as admin succeeds
-- Adding a booking as person1 fails
-    - Error are reported in the Developer Console of your browser
+- Listing rooms and bookings as `admin` and `person1` both work
+- Listing rooms and bookings as `person2` does *not* work
+    - Error reported in the browser's Developer Console
+- Adding a booking as `admin` succeeds
+- Adding a booking as `person1` fails
+    - Error reported in the browser's Developer Console
 
 # Requirement 1
 Allow guest to add their own booking, without exposing guest as a parameter

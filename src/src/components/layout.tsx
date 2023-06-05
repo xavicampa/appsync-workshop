@@ -32,7 +32,10 @@ const Layout = (props: IProps): JSX.Element => {
             <CssBaseline />
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Book-a-room</Typography>
+                    <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>Book-a-room</Typography>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        Logged in as <b>{props.user.username}</b>
+                    </Typography>
                     <Button
                         color="error"
                         onClick={
@@ -42,7 +45,7 @@ const Layout = (props: IProps): JSX.Element => {
                         }
                         variant="contained"
                     >
-                        <LogoutIcon />
+                        <LogoutIcon />&nbsp; Sign out 
                     </Button>
                 </Toolbar>
             </AppBar>

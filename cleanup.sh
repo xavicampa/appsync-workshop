@@ -7,6 +7,8 @@ echo "==============="
 echo "Cleaning up"
 echo "==============="
 echo " "
+echo "Errors before the 'Provisioning' step can be expected during the first run"
+echo " "
 
 echo "Deleting API..."
 APIID=`aws appsync list-graphql-apis --query "graphqlApis[?name=='BookingAPI'].apiId"|jq -r .[0]`

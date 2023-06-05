@@ -6,6 +6,7 @@ import { Alert, Avatar, Box, Button, Container, CssBaseline, Stack, Typography }
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LoginIcon from '@mui/icons-material/Login';
 
 interface IProps {
     auth: (typeof Auth),
@@ -69,7 +70,7 @@ const SignIn = (props: IProps): JSX.Element => {
                             }
                             variant="contained"
                         >
-                            Sign in
+                            <LoginIcon />&nbsp; Sign in
                         </Button>
                     </Stack>
                 }

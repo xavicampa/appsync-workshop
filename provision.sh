@@ -8,7 +8,7 @@ echo "============"
 echo "Provisioning"
 echo "============"
 echo " "
-echo "Errors from this point should be reported!"
+echo "ATTENTION: Errors from this point should be reported!"
 echo " "
 
 #  MAKING DB-environment 1
@@ -71,6 +71,11 @@ aws cognito-idp admin-create-user \
     --username person1 \
     --temporary-password Guest1234! \
     --no-cli-pager
+aws cognito-idp admin-create-user \
+    --user-pool-id $COGNITOUSERPOOLID \
+    --username person2 \
+    --temporary-password Guest1234! \
+    --no-cli-pager
 
 # Cognito groups
 aws cognito-idp create-group \
@@ -123,12 +128,12 @@ aws dynamodb create-table \
 echo "Creating Bookings data source and resolvers"
 APPSYNC_ROLE_ARN=`aws iam create-role \
     --role-name appsync-workshop-appsync-dynamodb-role \
-    --assume-role-policy-document file://appsync/role-assume-policy.json \
+    --assume-role-policy-document file://setup/appsync/role-assume-policy.json \
     --no-cli-pager | jq -r .Role.Arn`
 aws iam put-role-policy \
     --role-name appsync-workshop-appsync-dynamodb-role \
     --policy-name Permissions-Policy-For-AppSync \
-    --policy-document "`sed "s|%AWS_REGION%|$AWS_REGION|g;s|%AWS_ACCOUNT%|$AWS_ACCOUNT|g" < appsync/role-policy.json`" \
+    --policy-document "`sed "s|%AWS_REGION%|$AWS_REGION|g;s|%AWS_ACCOUNT%|$AWS_ACCOUNT|g" < setup/appsync/role-policy.json`" \
     --no-cli-pager
 aws appsync create-data-source \
     --api-id $APIID \
@@ -142,24 +147,24 @@ aws appsync create-resolver \
     --type-name Query \
     --api-id $APIID \
     --data-source-name BookingsDataSource \
-    --request-mapping-template "`cat appsync/resolvers/listBookings-req.vtl`" \
-    --response-mapping-template "`cat appsync/resolvers/listBookings-resp.vtl`" \
+    --request-mapping-template "`cat setup/appsync/resolvers/listBookings-req.vtl`" \
+    --response-mapping-template "`cat setup/appsync/resolvers/listBookings-resp.vtl`" \
     --no-cli-pager
 aws appsync create-resolver \
     --field-name addBooking \
     --type-name Mutation \
     --api-id $APIID \
     --data-source-name BookingsDataSource \
-    --request-mapping-template "`cat appsync/resolvers/addBooking-req.vtl`" \
-    --response-mapping-template "`cat appsync/resolvers/addBooking-resp.vtl`" \
+    --request-mapping-template "`cat setup/appsync/resolvers/addBooking-req.vtl`" \
+    --response-mapping-template "`cat setup/appsync/resolvers/addBooking-resp.vtl`" \
     --no-cli-pager
 aws appsync create-resolver \
     --field-name removeBooking \
     --type-name Mutation \
     --api-id $APIID \
     --data-source-name BookingsDataSource \
-    --request-mapping-template "`cat appsync/resolvers/removeBooking-req.vtl`" \
-    --response-mapping-template "`cat appsync/resolvers/removeBooking-resp.vtl`" \
+    --request-mapping-template "`cat setup/appsync/resolvers/removeBooking-req.vtl`" \
+    --response-mapping-template "`cat setup/appsync/resolvers/removeBooking-resp.vtl`" \
     --no-cli-pager
 
 # Wait for CFN to be COMPLETE
@@ -195,19 +200,20 @@ aws appsync create-resolver \
     --type-name Query \
     --api-id $APIID \
     --data-source-name RoomsDataSource \
-    --request-mapping-template "`cat appsync/resolvers/listRooms-req.vtl`" \
-    --response-mapping-template "`cat appsync/resolvers/listRooms-resp.vtl`" \
+    --request-mapping-template "`cat setup/appsync/resolvers/listRooms-req.vtl`" \
+    --response-mapping-template "`cat setup/appsync/resolvers/listRooms-resp.vtl`" \
     --no-cli-pager
 
 echo " "
 echo "=====COPY CONTENT BELOW======"
+echo Instance ID when deleting later: $$
 echo " "
 echo Cognito UserPool Id: $COGNITOUSERPOOLID
 echo Web Client: $WEBCLIENTID
 echo GraphQL API URL: $GRAPHQLAPIURL
 echo Admin web credential: admin:Admin1234!
 echo Guest web credential: person1:Guest1234!
-echo Instance ID when deleting later: $$
+echo Not-member web credential: person2:Guest1234!
 echo " "
 echo "Refrence for secrets manager for DB-admin:"
 echo $DBPASSWORDARN
