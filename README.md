@@ -21,16 +21,47 @@ Optional:
 - NodeJS to make changes, rebuild and run the Single Page Application locally
 
 ## Provisioning
-1. Clone repository
-2. Execute `provision.sh`:
+The script might return some errors on the first run, as it tries to clean-up any leftovers from previous executions. It is safe to ignore.
+
+NOTE: Consecutive executions of `provision.sh` will **reset** the environment back to the starting point! **Changes done in the AWS Console will be lost!**.
+
+### Option 1: from AWS CloudShell
+1. Login into your AWS sandbox and open the CloudShell on the lower left corner.
+2. Clone repository
+3. Execute `provision.sh`:
 
 ```bash
 bash provision.sh
 
 ```
-The script might return some errors on the first run, as it tries to clean-up any leftovers from previous executions. It is safe to ignore.
+4. Copy the final output of the script into your notepad for later use
 
-NOTE: Consecutive executions of `provision.sh` will **reset** the environment back to the starting point! **Changes done in the AWS Console will be lost!**.
+## Option 2: from local shell
+This option assumes you have installed and configured your AWS default profile.
+
+1. Clone repository
+2. Ensure that the `default` AWS profile is correctly set up pointing to your AWS sandbox account, with region and output specified
+
+    - `.aws/credentials`
+    ```
+    [default]
+    aws_access_key_id = AKIA***********
+    aws_secret_access_key = *********************
+    ```
+
+    - `.aws/config`
+    ```
+    [profile default]
+    region = eu-west-1
+    output = json
+    ```
+3. Execute `provision.sh`:
+
+```bash
+bash provision.sh
+
+```
+4. Copy the final output of the script into your notepad for later use
 
 ## Start Single Page Application locally
 ```bash
@@ -40,10 +71,14 @@ python -m http.server 3000
 It should then be possible to visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Starting point
-Only admin can add booking by specifying guest, dates and room.
+The user pool contains two groups, `admin` and `guest`, and two identities, `admin` and `person1`. `admin` user is member of the `admin` group, `person1` is member of the `guest`group.
+
+Authorization is defined in the GraphQL schema, and it's set so that only admin can manage bookings, having to specify guest, dates and room for the operations. Guests can only view.
 
 Test:
-- Adding a booking as guest fails
+- Listing rooms and bookins as `admin` and `person1` both work
+- Adding a booking as admin succeeds
+- Adding a booking as person1 fails
 
 ## CHANGE 1
 Allow guest to add their own booking, without exposing guest as a parameter.

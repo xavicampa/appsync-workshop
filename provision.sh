@@ -60,7 +60,7 @@ aws cognito-idp admin-create-user \
     --no-cli-pager
 aws cognito-idp admin-create-user \
     --user-pool-id $COGNITOUSERPOOLID \
-    --username guest \
+    --username person1 \
     --temporary-password Guest1234! \
     --no-cli-pager
 
@@ -80,7 +80,7 @@ aws cognito-idp admin-add-user-to-group \
     --no-cli-pager
 aws cognito-idp admin-add-user-to-group \
     --user-pool-id $COGNITOUSERPOOLID \
-    --username guest \
+    --username person1 \
     --group-name guest \
     --no-cli-pager
 
@@ -192,13 +192,13 @@ aws appsync create-resolver \
     --no-cli-pager
 
 echo " "
-echo "==========================="
+echo "=====COPY CONTENT BELOW======"
 echo " "
 echo Cognito UserPool Id: $COGNITOUSERPOOLID
 echo Web Client: $WEBCLIENTID
 echo GraphQL API URL: $GRAPHQLAPIURL
 echo Admin web credential: admin:Admin1234!
-echo Guest web credential: guest:Guest1234!
+echo Guest web credential: person1:Guest1234!
 echo Instance ID when deleting later: $$
 echo " "
 echo "Refrence for secrets manager for DB-admin:"
@@ -206,4 +206,4 @@ echo $DBPASSWORDARN
 echo " "
 echo "Refrence for secrets manager for DB-readonly (API):"
 echo $DBPASSWORDREADERARN
-echo "==========================="
+echo "=====COPY CONTENT ABOVE======"
