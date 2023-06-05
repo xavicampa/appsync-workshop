@@ -35,6 +35,33 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "addOwnBooking",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation AddOwnBooking($roomid:ID!,$start_date:String!,$end_date:String!) \n{\n    addOwnBooking(roomid: $roomid, start_date: $start_date, end_date: $end_date) {\n        guest\n        id\n    }\n}",
+						"variables": "{\n    \"roomid\": 4,\n    \"start_date\": \"now\",\n    \"end_date\": \"then\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{URL}}",
+					"host": [
+						"{{URL}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

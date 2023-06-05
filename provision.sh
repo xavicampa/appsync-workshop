@@ -2,6 +2,11 @@
 # clean-up
 bash cleanup.sh
 
+echo "============"
+echo "Provisioning"
+echo "============"
+echo "Errors from this point should be reported!"
+echo " "
 
 #  MAKING DB-environment 1
 
@@ -94,12 +99,12 @@ APIID=`aws appsync create-graphql-api \
     --no-cli-pager | jq -r .graphqlApi.apiId` 
 aws appsync start-schema-creation \
     --api-id $APIID \
-    --definition "`base64 < schema.graphql`" \
+    --definition "`base64 < setup/schema.graphql`" \
     --no-cli-pager
 
 # Prime Web config
 GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
-sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < aws-exports.js > web/aws-exports.js
+sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < setup/aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
 # DynamoDB
