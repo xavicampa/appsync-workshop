@@ -1,10 +1,11 @@
-import { Button, Container, Dialog, DialogActions, DialogTitle, Stack, Typography } from "@mui/material";
+import { Button, Container, Dialog, DialogActions, DialogTitle, InputAdornment, Stack, TextField, Typography } from "@mui/material";
 import GraphQLAPI, { GraphQLResult, GRAPHQL_AUTH_MODE } from '@aws-amplify/api-graphql';
 import { Auth } from "aws-amplify";
 import { AmplifyUser } from '@aws-amplify/ui';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useState } from "react";
+import { AccountCircle } from "@mui/icons-material";
 
 interface IProps {
     auth: (typeof Auth);
@@ -16,23 +17,27 @@ interface IProps {
 const NewBooking = (props: IProps): JSX.Element => {
 
     const [rooms, setRooms] = useState<any[]>();
+
+    const [selectedGuest, setSelectedGuest] = useState<String>('');
     const [selectedRoom, setSelectedRoom] = useState<Number | null>(null);
-    const [selectedStartDate, setSelectedStartDate] = useState<Number | null>(null);
-    const [selectedEndDate, setSelectedEndDate] = useState<Number | null>(null);
+    const [selectedStartDate, setSelectedStartDate] = useState<String | null>(null);
+    const [selectedEndDate, setSelectedEndDate] = useState<String | null>(null);
 
     useEffect(() => {
         if (props.open)
             fetchRooms();
     }, [props.open]);
 
-    // //DEBUG
-    // useEffect(() => {
-    //     console.log(selectedRoom);
-    //     console.log(selectedStartDate);
-    //     console.log(selectedEndDate);
-    // }, [selectedRoom, selectedStartDate, selectedEndDate]);
+    //DEBUG
+    useEffect(() => {
+        console.log(selectedGuest);
+        console.log(selectedRoom);
+        console.log(selectedStartDate);
+        console.log(selectedEndDate);
+    }, [selectedGuest, selectedRoom, selectedStartDate, selectedEndDate]);
 
     const handleClose = () => {
+        setSelectedGuest('');
         setSelectedRoom(null);
         setSelectedStartDate(null);
         setSelectedEndDate(null);
@@ -52,13 +57,14 @@ const NewBooking = (props: IProps): JSX.Element => {
     function addBooking() {
         (GraphQLAPI.graphql(
             {
-                query: `mutation AddBooking($roomid:ID!,$start_date:String!,$end_date:String!) {
-                            addBooking(roomid: $roomid, start_date: $start_date, end_date: $end_date) {
+                query: `mutation AddBooking($guest:String!,$roomid:ID!,$start_date:String!,$end_date:String!) {
+                            addBooking(guest: $guest, roomid: $roomid, start_date: $start_date, end_date: $end_date) {
                                 id
                             }
                         }`,
                 authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
                 variables: {
+                    guest: selectedGuest,
                     roomid: selectedRoom,
                     start_date: selectedStartDate,
                     end_date: selectedEndDate
@@ -82,7 +88,6 @@ const NewBooking = (props: IProps): JSX.Element => {
             <Container>
                 <DialogTitle>New booking</DialogTitle>
                 <Stack
-                    alignItems="center"
                     direction="row"
                     justifyContent="center"
                     spacing={2}
@@ -100,6 +105,27 @@ const NewBooking = (props: IProps): JSX.Element => {
                         />
                     </LocalizationProvider>
                 </Stack>
+                <Container
+                    sx={{ padding: 2 }}
+                >
+                    <Typography>Guest</Typography>
+                    <TextField
+                        fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <AccountCircle />
+                                </InputAdornment>
+                            ),
+                        }}
+                        onChange={
+                            (newValue: React.ChangeEvent<HTMLInputElement>) => {
+                                setSelectedGuest(newValue.target.value)
+                            }
+                        }
+                        value={selectedGuest}
+                    />
+                </Container>
                 <Container
                     sx={{ padding: 2 }}
                 >

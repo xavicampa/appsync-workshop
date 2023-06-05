@@ -32,9 +32,7 @@ const Layout = (props: IProps): JSX.Element => {
             <CssBaseline />
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Book-a-hytte
-                    </Typography>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Book-a-room</Typography>
                     <Button
                         color="error"
                         onClick={
