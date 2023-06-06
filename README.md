@@ -42,13 +42,13 @@ Errors are expected on the first run, as it tries to clean up leftovers from per
 6. Copy the final output of the script into your notepad for later use
 
 ## Option 2: from local shell
-This option assumes you have installed and configured your AWS default profile.
+This option assumes you have installed and configured the [aws-cli](https://aws.amazon.com/cli/) with a `default` AWS profile.
 
 1. Clone repository
 ```
 git clone https://github.com/xavicampa/appsync-workshop.git
 ```
-2. Ensure that the `default` AWS profile is correctly set up and pointing to your AWS sandbox account *with region and output specified*
+2. Ensure that the `default` AWS profile is correctly set up with credentials from your AWS sandbox account _with region and output specified_. *Make sure that your default profile DOES NOT point to a customer AWS account!*
 
     - `.aws/credentials`
     ```
