@@ -121,6 +121,19 @@ Test the following:
     - Error might be reported only in the browser's Developer Console
 
 # Requirement 1
+Limit access to bookings `guest` field to `admin` members.
+
+## HOW
+Add `@aws_auth` to `guest` field in `Booking` type with only the `admin` group.
+
+### Test
+- running listBookings as `admin` succeeds when querying for `guest` field
+- running listBookings as `person1` fails when querying for `guest` field
+
+### Observe
+- Inspect the GraphQL response, what's in `data` and `error` fields
+
+# Requirement 2
 Allow guest to add their own booking, without exposing guest as a parameter
 
 ## HOW
@@ -133,7 +146,7 @@ New mutation, guest auth, no guest parameter, use `$ctx.identity.sub` in resolve
 - Updates are not visible without refresh
 - Guest cannot remove bookings
 
-# Requirement 2
+# Requirement 3
 Make guest bookings visible without refresh
 
 ## HOW
@@ -142,7 +155,7 @@ Add the new mutation to subscription
 ### Test
 - Adding a booking as guest succeeds and appears without refresh
 
-# Requirement 3
+# Requirement 4
 Allow guest to remove their own bookings, without exposing guest as parameter.
 
 ## HOW
@@ -154,19 +167,6 @@ New mutation, guest auth, no guest parameter, use $ctx.identity.sub for *authori
 
 ### Observe
 - Updates are not visible without refresh (fix by adding new mutation to subscription)
-
-# Requirement 4
-Limit access to bookings `guest` field to `admin` members.
-
-## HOW
-Add `@aws_auth` to `guest` field in `Booking` type with only the `admin` group.
-
-### Test
-- running listBookings as `admin` succeeds when querying for `guest` field
-- running listBookings as `person1` fails when querying for `guest` field
-
-### Observe
-- Inspect the GraphQL response, what's in `data` and `error` fields
 
 # Requirement 5
 Display room price (per day) of bookings without issuing extra API calls.
