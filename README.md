@@ -143,7 +143,7 @@ New mutation, guest auth, no guest parameter, use `$ctx.identity.sub` in resolve
 - Adding a booking as guest succeeds
 
 ### Observe
-- Updates are not visible without refresh
+- Updates are not visible at once, one has to exit Bookings (Home, or Rooms) and load again Bookings
 - Guest cannot remove bookings
 
 # Requirement 3
