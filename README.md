@@ -138,6 +138,19 @@ New mutation, guest auth, no guest parameter, use $ctx.identity.sub for *authori
 - Updates are not visible without refresh (fix by adding new mutation to subscription)
 
 # Requirement 4
+Limit access to bookings `guest` field to `admin` members.
+
+## HOW
+Add `@aws_auth` to `guest` field in `Booking` type with only the `admin` group.
+
+### Test
+- running listBookings as `admin` succeeds when querying for `guest` field
+- running listBookings as `person1` fails when querying for `guest` field
+
+### Observe
+- When querying as `guest` all fields within `Booking`, both `data` and `error` fields are populated
+
+# Requirement 5
 Display room price (per day) of bookings without issuing extra API calls.
 
 _OPTIONAL: modify frontend to display the new field. Requires NodeJS._
@@ -147,6 +160,20 @@ Add `room` field to `Booking` type of type `Room`, add resolver and mapping temp
 
 ### Test
 - listBookings accepts `room` field and can return its `price`
+
+### Observe
+- The new field requires `@aws_auth` to be added
+
+# Requirement 6
+Display bookings when listing rooms without issuing extra API calls.
+
+_OPTIONAL: modify frontend to display booking information the room list. Requires NodeJS._
+
+## HOW
+Add `bookings` field to `Room` type of type `Booking[]`, add resolver and mapping template
+
+### Test
+- listRooms accepts `bookings` field and can return its properties
 
 ### Observe
 - The new field requires `@aws_auth` to be added
