@@ -48,7 +48,8 @@ This option assumes you have installed and configured the [aws-cli](https://aws.
 ```
 git clone https://github.com/xavicampa/appsync-workshop.git
 ```
-2. Ensure that the `default` AWS profile is correctly set up with credentials from your AWS sandbox account _with region and output specified_. *Make sure that your default profile DOES NOT point to a customer AWS account!*
+2. Ensure that the `default` AWS profile is correctly set up with credentials from your AWS sandbox account _with region and output specified_
+    - __Make sure that your default profile DOES NOT point to a customer AWS account!__
 
     - `.aws/credentials`
     ```
