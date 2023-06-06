@@ -15,7 +15,7 @@ Requirements:
 - Postman
 
 Optional:
-- NodeJS to make changes, rebuild and run the Single Page Application locally
+- NodeJS to make changes and rebuild the Single Page Application
 
 # Provisioning
 The script might return some errors on the first run, as it tries to clean-up any leftovers from previous executions. It is safe to ignore errors during clean-up. Any errors from the "Provisioning" point should be reported.
