@@ -75,6 +75,7 @@ Errors are expected on the first run, as it tries to clean up leftovers from per
 # Run web locally
 The file `aws-exports.js` is primed during the execution of `provision.sh` with pointers to the resources provisioned in your AWS account. If the script has run from a local shell (Option 2 above), there's nothing to do. If the script has run in the CloudShell (Option 1 above), make sure to copy&paste the content of `aws-exports.js` from the CloudShell to your `web/aws-exports.js` file.
 
+
 ## Option 1: using `python`
 ```bash
 cd web
@@ -92,6 +93,11 @@ npm start
 Once the web is running locally, it should then be possible to visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 Login into the application using the `admin`, `person1` and `person2` credentials (specified in the output of the `provision.sh` script above). You will be prompted to change password upon the first login of each identity. Use a password that you'll remember (or use a password manager), as you'll have to enter it when changing identities.
+
+# Postman
+Open Postman and import the collection `postman/GraphQLWorkshop.postman_collection.json`. There are two collection variables to be set:
+    - URL: GraphQL API URL taken from the output of `provision.sh`
+    - Authorization: copy the `XXXXX.access_token` variable from the `Session storage` of the browser after login
 
 # Initial functionality
 The user pool contains two groups, `admin` and `guest`, and three identities, `admin`, `person1` and `person2`. `admin` user is member of the `admin` group, `person1` is member of the `guest` group, `person2` does not belong to any groups.
