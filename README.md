@@ -23,12 +23,14 @@ The script might return some errors on the first run, as it tries to clean up an
 NOTE: Consecutive executions of `provision.sh` will **reset** the environment back to the starting point! **Changes done in the AWS Console will be lost!**
 
 ## Option 1: from AWS CloudShell
-1. Login into your AWS sandbox and open the CloudShell on the lower left corner.
-2. Clone repository
+1. Login into your AWS sandbox
+2. Select the `eu-west-1` region on the top right corner
+3. Open the CloudShell on the lower left corner.
+4. Clone repository
 ```
 git clone https://github.com/xavicampa/appsync-workshop.git
 ```
-3. Execute `provision.sh`. Empty `Instance ID` on the first run is fine, simply press Enter:
+5. Execute `provision.sh`. Empty `Instance ID` on the first run is fine, simply press Enter:
 
 ```bash
 cd appsync-workshop
@@ -37,7 +39,7 @@ bash provision.sh
 ```
 Errors are expected on the first run, as it tries to clean up leftovers from pervious executions. *Pay attention to any errors happening *after* the Provisioning message*
 
-4. Copy the final output of the script into your notepad for later use
+6. Copy the final output of the script into your notepad for later use
 
 ## Option 2: from local shell
 This option assumes you have installed and configured your AWS default profile.
