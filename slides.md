@@ -14,6 +14,7 @@ Avilés 🇪🇸 1981 🦖
 * Computers 💻🪛
 * Cars 🏎
 * Tennis 🎾
+* Golf from Saturday? 🤓🏌
 ---
 # API journey
 _2011_ __Provisioning API__ for Visma (SOAP, .NET 3.5, on-prem IIS)
@@ -33,7 +34,6 @@ _2022_ __Developing REST APIs using API CodeFlow__ (Webstep Fagdag 2022 foredrag
 _2022_ __Studies API__ for Aidee Health AS (GraphQL, Python, AWS AppSync)
 ---
 # Agenda
-* _State of APIs_ 2022 report
 * Quick overview
     * API technologies
     * Authentication mechanisms
@@ -44,16 +44,10 @@ _2022_ __Studies API__ for Aidee Health AS (GraphQL, Python, AWS AppSync)
     * mapping templates
 * Authentication: OpenID Connect (HelseID)
 * Authorization
-* TypeScript client generation in React with Amplify
 ## What we won't cover
 * Advanced GraphQL features
-    * Delegation, Transforms, Schema merging/stitching
+    * Delegation, Transforms, Merging/Stitching
 * Cognito + HelseID integration
----
-# State of APIs
-* Postman State of API 2022
-    * Key findings: https://www.postman.com/state-of-api/#key-findings
-    * Technologies: https://www.postman.com/state-of-api/api-technologies/#api-technologies
 ---
 # Overview of API technologies
 - REST
@@ -712,52 +706,14 @@ _"How do we know who is a doctor, an administrator, a patient, or all at once!?"
 - Based on the existence of _custom:idp.hp_number_ claim
 - Assignment lasts the duration of the session
 ---
-# Assignment at login
-## How?
-- Lambda triggers in Amazon Cognito
-- Pre-token generation
-    - After receiving HelseID token
-    - Before generating Cognito token
----
-# Dynamic group assignment
-```json
-{
-  "sub": "c1a1d232-df61-4157-b7d2-38881191e55c",
-  "cognito:groups": [ "admin" ],
-  "custom:idp.hp_number": "43218765",
-  "exp": 1681462824,
-  "aud": "HealthApp",
-  [...]
-}
-```
----
-# Dynamic group assignment
-```json
-{
-  "sub": "c1a1d232-df61-4157-b7d2-38881191e55c",
-  "cognito:groups": [ "admin" ],
-  "custom:idp.hp_number": "43218765",
-  "exp": 1681462824,
-  "aud": "HealthApp",
-  [...]
-}
-{
-  "sub": "c1a1d232-df61-4157-b7d2-38881191e55c",
-  "cognito:groups": [ "admin", "hp" ],
-  "custom:idp.hp_number": "43218765",
-  "exp": 1681462824,
-  "aud": "HealthApp",
-  [...]
-}
-```
----
-# Brief look at the code? 🤓
+# Hacka litt? 🤓
+[https://github.com/xavicampa/appsync-workshop](https://github.com/xavicampa/appsync-workshop)
 ---
 # Thank you!
 - Questions? 
 - Feedback?
 ## Contact
- javier.campa@webstep.no
+󰇮 javier.campa@webstep.no
 
  @javier
 

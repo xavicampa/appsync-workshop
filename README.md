@@ -2,20 +2,20 @@
 During this workshop, we’ll look into authentication, authorization and the integration with multiple backend data sources.
 
 This repository contains template/boilerplate scripts and resources to be used during the workshop, including:
-- Single Page Application
-- GraphQL API
-- User pool
-- Booking NoSQL (DynamoDB) database
-- Rooms SQL (Aurora Serverless) database
+- Web (React 18 single-page-app)
+- GraphQL API (AWS AppSync)
+- User pool (Amazon Cognito)
+- Booking NoSQL (Amazon DynamoDB) database
+- Rooms SQL (Amazon Aurora Serverless) database
 - Scripts and templates to get these running in the AWS public cloud
 
 Requirements:
 - AWS account
-- Python 3.x to run single page application locally
-- Postman
+- [Python 3.x](https://www.python.org/downloads/) to serve the web locally
+- [Postman](https://www.postman.com/downloads/) to issue API requests directly
 
 Optional:
-- [NodeJS](https://nodejs.org/en) to make changes and rebuild the Single Page Application
+- [NodeJS](https://nodejs.org/en) to make changes and rebuild the web
 
 # Provisioning
 The script might return some errors on the first run, as it tries to clean-up any leftovers from previous executions. It is safe to ignore errors during clean-up. Any errors from the "Provisioning" point should be reported.
@@ -28,14 +28,14 @@ NOTE: Consecutive executions of `provision.sh` will **reset** the environment ba
 ```
 git clone https://github.com/xavicampa/appsync-workshop.git
 ```
-3. Execute `provision.sh`, do not specify any `Instance ID` on the first run, simply press Enter:
+3. Execute `provision.sh`. Empty `Instance ID` on the first run is fine, simply press Enter:
 
 ```bash
 cd appsync-workshop
 bash provision.sh
 
 ```
-*Pay attention to any errors happening *after* the Provisioning message*
+Errors are expected on the first run, as it tries to clean up leftovers from pervious executions. *Pay attention to any errors happening *after* the Provisioning message*
 
 4. Copy the final output of the script into your notepad for later use
 
@@ -68,7 +68,7 @@ cd appsync-workshop
 bash provision.sh
 
 ```
-    - Pay attention to any errors happening *after* the Provisioning message
+Errors are expected on the first run, as it tries to clean up leftovers from pervious executions. *Pay attention to any errors happening *after* the Provisioning message*
 
 4. Copy the final output of the script into your notepad for later use
 
@@ -84,6 +84,7 @@ python -m http.server 3000
 ## Option 2: using `npm start`. Requires NodeJS
 ```bash
 cd src
+npm install
 npm start
 ```
 
