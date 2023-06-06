@@ -102,8 +102,8 @@ Login into the application using the `admin`, `person1` and `person2` credential
 # Postman
 Open Postman and import the collection `postman/GraphQLWorkshop.postman_collection.json`. There are two collection variables to be set
 
-- URL: GraphQL API URL taken from the output of `provision.sh`
-- Authorization: copy the `XXXXX.access_token` variable from the `Session storage` of the browser after login
+- _URL_: GraphQL API URL taken from the output of `provision.sh`
+- _Authorization_: copy the `XXXXX.access_token` variable from the `Session storage` of the browser after login
 
 # Initial functionality
 The user pool contains two groups, `admin` and `guest`, and three identities, `admin`, `person1` and `person2`. `admin` user is member of the `admin` group, `person1` is member of the `guest` group, `person2` does not belong to any groups.
