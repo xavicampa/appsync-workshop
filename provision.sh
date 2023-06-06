@@ -29,7 +29,7 @@ DBCLUSTERARN=`aws rds create-db-cluster \
     --engine aurora-mysql \
     --engine-mode serverless \
     --engine-version 5.7.2 \
-    --scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=300 \
+    --scaling-configuration MinCapacity=1,MaxCapacity=4,AutoPause=true,SecondsUntilAutoPause=3600 \
     --query DBCluster.DBClusterArn \
     --output text` || exit
 
