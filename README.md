@@ -15,7 +15,7 @@ Requirements:
 - Postman
 
 Optional:
-- NodeJS to make changes and rebuild the Single Page Application
+- [NodeJS](https://nodejs.org/en) to make changes and rebuild the Single Page Application
 
 # Provisioning
 The script might return some errors on the first run, as it tries to clean-up any leftovers from previous executions. It is safe to ignore errors during clean-up. Any errors from the "Provisioning" point should be reported.
@@ -81,7 +81,7 @@ cd web
 python -m http.server 3000
 ```
 
-## Option 2: using `npm start`. Requires [NodeJS](https://nodejs.org/en)
+## Option 2: using `npm start`. Requires NodeJS
 ```bash
 cd src
 npm start
