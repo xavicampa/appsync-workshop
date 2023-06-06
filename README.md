@@ -24,7 +24,7 @@ NOTE: Consecutive executions of `provision.sh` will **reset** the environment ba
 
 ## Option 1: from AWS CloudShell
 1. Login into your AWS sandbox
-2. Select the `eu-west-1` region on the top right corner
+2. Select the `Europe (Ireland) - eu-west-1` region on the top right corner
 3. Open the CloudShell on the lower left corner.
 4. Clone repository
 ```
