@@ -73,6 +73,8 @@ bash provision.sh
 4. Copy the final output of the script into your notepad for later use
 
 # Run web locally
+The file `aws-exports.js` is primed during the execution of `provision.sh`. If the script has run locally (Option 2 above), there's nothing to do. If the script has run in the CloudShell (Option 1 above), make sure to copy&paste it's contents from the CloudShell to your `web/aws-exports.js` file.
+
 ## Option 1: using `python`
 ```bash
 cd web
