@@ -28,7 +28,7 @@ NOTE: Consecutive executions of `provision.sh` will **reset** the environment ba
 ```
 git clone https://github.com/xavicampa/appsync-workshop.git
 ```
-3. Execute `provision.sh`:
+3. Execute `provision.sh`, do not specify any `Instance ID` on the first run, simply press Enter:
 
 ```bash
 cd appsync-workshop
