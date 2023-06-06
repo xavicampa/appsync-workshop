@@ -11,7 +11,7 @@ echo "Errors before the 'Provisioning' step can be expected during the first run
 echo " "
 
 echo "Deleting API..."
-APIID=`aws appsync list-graphql-apis --query "graphqlApis[?name=='BookingAPI'].apiId"|jq -r .[0]`
+APIID=`aws appsync list-graphql-apis --query "graphqlApis[?name=='BookingAPI'].apiId" --output json | jq -r .[0]`
 aws appsync delete-graphql-api --api-id $APIID
 
 echo "Deleting Bookings table..."
@@ -22,8 +22,8 @@ aws iam delete-role-policy \
 aws iam delete-role --role-name appsync-workshop-appsync-dynamodb-role --no-cli-pager
 
 echo "Deleting user pool..."
-COGNITOUSERPOOLID=`aws cognito-idp list-user-pools --max-results 50 --query "UserPools[?Name=='BookingUserPool'].Id"|jq -r .[0]`
-AWS_ACCOUNT=`aws sts get-caller-identity | jq -r .Account`
+COGNITOUSERPOOLID=`aws cognito-idp list-user-pools --max-results 50 --query "UserPools[?Name=='BookingUserPool'].Id" --output json | jq -r .[0]`
+AWS_ACCOUNT=`aws sts get-caller-identity --output json | jq -r .Account`
 AWS_REGION=${AWS_REGION:-eu-west-1}
 aws cognito-idp delete-user-pool-domain --user-pool-id $COGNITOUSERPOOLID --domain $AWS_ACCOUNT
 aws cognito-idp delete-user-pool --user-pool-id $COGNITOUSERPOOLID

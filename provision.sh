@@ -41,13 +41,14 @@ DBCLUSTERARN=`aws rds create-db-cluster \
 
 echo "Creating user pool"
 # Cognito userpool
-COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool | jq -r .UserPool.Id`
+COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool --output json | jq -r .UserPool.Id`
 
 # Cognito domain (to expose HostedUI)
 AWS_ACCOUNT=`aws sts get-caller-identity | jq -r .Account`
 COGNITODOMAIN=`aws cognito-idp create-user-pool-domain \
     --domain $AWS_ACCOUNT \
-    --user-pool-id $COGNITOUSERPOOLID | jq -r .UserPoolDomain`
+    --user-pool-id $COGNITOUSERPOOLID \
+    --output json | jq -r .UserPoolDomain`
 
 # Cognito web client
 WEBCLIENTID=`aws cognito-idp create-user-pool-client \
@@ -58,7 +59,8 @@ WEBCLIENTID=`aws cognito-idp create-user-pool-client \
     --allowed-o-auth-flows-user-pool-client \
     --allowed-o-auth-flows code \
     --allowed-o-auth-scopes openid profile aws.cognito.signin.user.admin \
-    --client-name web | jq -r .UserPoolClient.ClientId`
+    --client-name web \
+    --output json | jq -r .UserPoolClient.ClientId`
 
 # Cognito users
 aws cognito-idp admin-create-user \
@@ -104,6 +106,7 @@ APIID=`aws appsync create-graphql-api \
     --name BookingAPI \
     --authentication-type AMAZON_COGNITO_USER_POOLS \
     --user-pool-config userPoolId=$COGNITOUSERPOOLID,awsRegion=$AWS_REGION,defaultAction=DENY \
+    --output json \
     --no-cli-pager | jq -r .graphqlApi.apiId` 
 aws appsync start-schema-creation \
     --api-id $APIID \
@@ -111,7 +114,7 @@ aws appsync start-schema-creation \
     --no-cli-pager
 
 # Prime Web config
-GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID|jq -r .graphqlApi.uris.GRAPHQL`
+GRAPHQLAPIURL=`aws appsync get-graphql-api --api-id $APIID --output json | jq -r .graphqlApi.uris.GRAPHQL`
 sed "s|%AWS_REGION%|$AWS_REGION|g;s|%GRAPHQLAPIURL%|$GRAPHQLAPIURL|g;s|%USERPOOLID%|$COGNITOUSERPOOLID|g;s|%WEBCLIENTID%|$WEBCLIENTID|g;s|%COGNITODOMAIN%|$AWS_ACCOUNT.auth.$AWS_REGION.amazoncognito.com|g" < setup/aws-exports.js > web/aws-exports.js
 cp web/aws-exports.js src/public/aws-exports.js
 
@@ -129,6 +132,7 @@ echo "Creating Bookings data source and resolvers"
 APPSYNC_ROLE_ARN=`aws iam create-role \
     --role-name appsync-workshop-appsync-dynamodb-role \
     --assume-role-policy-document file://setup/appsync/role-assume-policy.json \
+    --output json \
     --no-cli-pager | jq -r .Role.Arn`
 aws iam put-role-policy \
     --role-name appsync-workshop-appsync-dynamodb-role \
