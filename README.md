@@ -81,13 +81,13 @@ The file `aws-exports.js` is primed during the execution of `provision.sh` with 
 - If the script has run in the CloudShell (Option 1 above), you need to clone the repository locally in your machine and make sure to copy&paste the content of `web/aws-exports.js` from the CloudShell to your local `web/aws-exports.js` file
 - If the script has run from a local shell (Option 2 above), there's nothing to do 
 
-## Option 1: using `python`
+## Option 1: serve web locally using `python`
 ```bash
 cd web
 python -m http.server 3000
 ```
 
-## Option 2: using `npm start`. Requires NodeJS
+## Option 2: run web locally using `npm start`. Requires NodeJS
 ```bash
 cd src
 npm install
