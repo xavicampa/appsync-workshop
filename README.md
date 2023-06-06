@@ -76,8 +76,9 @@ Errors are expected on the first run, as it tries to clean up leftovers from per
 4. Copy the final output of the script into your notepad for later use
 
 # Run web locally
-The file `aws-exports.js` is primed during the execution of `provision.sh` with pointers to the resources provisioned in your AWS account. If the script has run from a local shell (Option 2 above), there's nothing to do. If the script has run in the CloudShell (Option 1 above), make sure to copy&paste the content of `web/aws-exports.js` from the CloudShell to your `web/aws-exports.js` file.
-
+The file `aws-exports.js` is primed during the execution of `provision.sh` with pointers to the resources provisioned in your AWS account:
+    - If the script has run from a local shell (Option 2 above), there's nothing to do 
+    - If the script has run in the CloudShell (Option 1 above), you need to clone the repository locally, and make sure to copy&paste the content of `web/aws-exports.js` from the CloudShell to your local `web/aws-exports.js` file
 
 ## Option 1: using `python`
 ```bash
