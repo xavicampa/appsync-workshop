@@ -152,7 +152,7 @@ Add `@aws_auth` to `guest` field in `Booking` type with only the `admin` group.
 - running listBookings as `person1` fails when querying for `guest` field
 
 ### Observe
-- When querying as `guest` all fields within `Booking`, both `data` and `error` fields are populated
+- Inspect the GraphQL response, what's in `data` and `error` fields
 
 # Requirement 5
 Display room price (per day) of bookings without issuing extra API calls.
