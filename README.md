@@ -18,7 +18,7 @@ Optional:
 - [NodeJS](https://nodejs.org/en) to make changes and rebuild the web
 
 # Provisioning
-The script might return some errors on the first run, as it tries to clean-up any leftovers from previous executions. It is safe to ignore errors during clean-up. Any errors from the "Provisioning" point should be reported.
+The script might return some errors on the first run, as it tries to clean up any leftovers from previous executions. It is safe to ignore errors during clean-up. Any errors from the "Provisioning" point should be reported.
 
 NOTE: Consecutive executions of `provision.sh` will **reset** the environment back to the starting point! **Changes done in the AWS Console will be lost!**
 
