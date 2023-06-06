@@ -73,7 +73,7 @@ bash provision.sh
 4. Copy the final output of the script into your notepad for later use
 
 # Run web locally
-The file `aws-exports.js` is primed during the execution of `provision.sh`. If the script has run locally (Option 2 above), there's nothing to do. If the script has run in the CloudShell (Option 1 above), make sure to copy&paste it's contents from the CloudShell to your `web/aws-exports.js` file.
+The file `aws-exports.js` is primed during the execution of `provision.sh` with pointers to the resources provisioned in your AWS account. If the script has run from a local shell (Option 2 above), there's nothing to do. If the script has run in the CloudShell (Option 1 above), make sure to copy&paste the content of `aws-exports.js` from the CloudShell to your `web/aws-exports.js` file.
 
 ## Option 1: using `python`
 ```bash
@@ -81,15 +81,16 @@ cd web
 python -m http.server 3000
 ```
 
-## Option 2: using `npm start` (requires NodeJS)
+## Option 2: using `npm start`. Requires [NodeJS](https://nodejs.org/en)
 ```bash
 cd src
 npm start
 ```
+
 # First time login
 Once the web is running locally, it should then be possible to visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-Login into the application using the `admin` and `person1` credentials (specified in the output of the `provision.sh` script above). You will be prompted to change password upon the first login of each identity. Use a password that you'll remember (or use a password manager), as you'll have to enter it when changing identities.
+Login into the application using the `admin`, `person1` and `person2` credentials (specified in the output of the `provision.sh` script above). You will be prompted to change password upon the first login of each identity. Use a password that you'll remember (or use a password manager), as you'll have to enter it when changing identities.
 
 # Initial functionality
 The user pool contains two groups, `admin` and `guest`, and three identities, `admin`, `person1` and `person2`. `admin` user is member of the `admin` group, `person1` is member of the `guest` group, `person2` does not belong to any groups.
@@ -99,10 +100,10 @@ Authorization is defined so that only `admin` members can manage bookings, havin
 Test the following:
 - Listing rooms and bookings as `admin` and `person1` both work
 - Listing rooms and bookings as `person2` does *not* work
-    - Error reported in the browser's Developer Console
+    - Error might be reported only in the browser's Developer Console
 - Adding a booking as `admin` succeeds
 - Adding a booking as `person1` fails
-    - Error reported in the browser's Developer Console
+    - Error might be reported only in the browser's Developer Console
 
 # Requirement 1
 Allow guest to add their own booking, without exposing guest as a parameter
@@ -179,6 +180,9 @@ Add `bookings` field to `Room` type of type `Booking[]`, add resolver and mappin
 
 ### Observe
 - The new field requires `@aws_auth` to be added
+
+# Requirement 7
+Add filtering, so that `listBookings` can filter results by `guest` and `roomid`.
 
 # Clean up
 Execute `cleanup.sh`, provide the `Instance ID` returned by the `provision.sh` script when asked.
