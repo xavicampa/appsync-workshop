@@ -61,7 +61,7 @@ git clone https://github.com/xavicampa/appsync-workshop.git
     region = eu-west-1
     output = json
     ```
-3. Execute `provision.sh`:
+3. Execute `provision.sh`. Empty `Instance ID` on the first run is fine, simply press Enter:
 
 ```bash
 cd appsync-workshop
