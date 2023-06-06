@@ -708,7 +708,6 @@ _"How do we know who is a doctor, an administrator, a patient, or all at once!?"
 ---
 # Hacka litt? 🤓
 [https://github.com/xavicampa/appsync-workshop](https://github.com/xavicampa/appsync-workshop)
----
 # Thank you!
 - Questions? 
 - Feedback?
