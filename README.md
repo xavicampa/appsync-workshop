@@ -113,9 +113,11 @@ Authorization is defined so that only `admin` members can manage bookings, havin
 Test the following:
 - Listing rooms and bookings as `admin` and `person1` both work
 - Listing rooms and bookings as `person2` does *not* work
+    - Inspect Network tab in your browser's developer tool to check for the API error
     - Error might be reported only in the browser's Developer Console
 - Adding a booking as `admin` succeeds
 - Adding a booking as `person1` fails
+    - Inspect Network tab in your browser's developer tool to check for the API error
     - Error might be reported only in the browser's Developer Console
 
 # Requirement 1
