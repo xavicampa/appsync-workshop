@@ -12,6 +12,7 @@ This repository contains template/boilerplate scripts and resources to be used d
 Requirements:
 - AWS account
 - [Python 3.x](https://www.python.org/downloads/) to serve the web locally
+- jq
 - [Postman](https://www.postman.com/downloads/) to issue API requests directly
 
 Optional:
