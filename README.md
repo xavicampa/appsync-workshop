@@ -104,7 +104,12 @@ Login into the application using the `admin`, `person1` and `person2` credential
 Open Postman and import the collection `postman/GraphQLWorkshop.postman_collection.json`. There are two collection variables to be set
 
 - _URL_: GraphQL API URL taken from the output of `provision.sh`
-- _Authorization_: copy the `XXXXX.access_token` variable from the `Session storage` of the browser after login
+- _Authorization_: copy the `XXXXX.accessToken` variable from the `Session storage` of the browser after login. This variable needs to be updated when switching between `admin`, `person1` and `person2` identities, as the token is unique per identity and session
+
+Remember to save the variables.
+
+*This `Authorization` blob is actually a JWT token. To inspect the contents, go to [jwt.io](https://jwt.io) and simply paste the JWT token in the left panel, the contents will then show up on the right panel. You'll see, among other fields, your unique user identifier, or _subject_, in the `sub` claim. We'll use this in the exercises below.*
+
 
 # Initial functionality
 The user pool contains two groups, `admin` and `guest`, and three identities, `admin`, `person1` and `person2`. `admin` user is member of the `admin` group, `person1` is member of the `guest` group, `person2` does not belong to any groups.
