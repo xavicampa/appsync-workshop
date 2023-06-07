@@ -1,41 +1,43 @@
-schema {
-    query: Query
-    mutation: Mutation
-    subscription: Subscription
+type Booking @aws_cognito_user_pools {
+	end_date: String!
+	guest: String!
+	id: ID!
+	roomid: ID!
+	start_date: String!
+}
+
+type Mutation @aws_cognito_user_pools {
+	addBooking(
+		guest: String!,
+		start_date: String!,
+		end_date: String!,
+		roomid: ID!
+	): Booking
+		@aws_cognito_user_pools(cognito_groups: ["admin"])
+	removeBooking(guest: ID!, id: ID!): Booking
+		@aws_cognito_user_pools(cognito_groups: ["admin"])
 }
 
 type Query {
-    listBookings: [Booking!]
-        @aws_auth(cognito_groups:["admin","guest"])
-    listRooms: [Room!]
-        @aws_auth(cognito_groups:["admin","guest"])
+	listBookings: [Booking!]
+		@aws_cognito_user_pools(cognito_groups: ["admin","guest"])
+	listRooms: [Room!]
+		@aws_cognito_user_pools(cognito_groups: ["admin","guest"])
 }
 
-type Mutation {
-    addBooking(guest: String!, start_date: String!, end_date: String!, roomid: ID!): Booking
-        @aws_auth(cognito_groups:["admin"])
-    removeBooking(guest: ID!, id: ID!): Booking
-        @aws_auth(cognito_groups:["admin"])
+type Room @aws_cognito_user_pools {
+	id: ID!
+	beds: Int!
+	price: Int!
 }
 
-type Subscription {
-    onBookingUpdates: Booking
-        @aws_subscribe(mutations:["addBooking","removeBooking"])
-        @aws_auth(cognito_groups:["admin","guest"])
+type Subscription @aws_cognito_user_pools {
+	onBookingUpdates: Booking
+		@aws_subscribe(mutations: ["addBooking","removeBooking"])
 }
 
-type Booking {
-    end_date: String!
-    guest: String!
-    id: ID!
-    roomid: ID!
-	# room: Room!
-	#     @aws_auth(cognito_groups: ["admin","guest"])
-    start_date: String!
-}
-
-type Room {
-    id: ID!
-    beds: Int!
-    price: Int!
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
 }

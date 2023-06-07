@@ -106,8 +106,8 @@ echo "Creating GraphQL API"
 AWS_REGION=${AWS_REGION:-eu-west-1}
 APIID=`aws appsync create-graphql-api \
     --name BookingAPI \
-    --authentication-type AMAZON_COGNITO_USER_POOLS \
-    --user-pool-config userPoolId=$COGNITOUSERPOOLID,awsRegion=$AWS_REGION,defaultAction=DENY \
+    --authentication-type AWS_IAM \
+    --additional-authentication-providers authenticationType=AMAZON_COGNITO_USER_POOLS,userPoolConfig=\{userPoolId=$COGNITOUSERPOOLID,awsRegion=$AWS_REGION\} \
     --output json \
     --no-cli-pager | jq -r .graphqlApi.apiId` 
 aws appsync start-schema-creation \
