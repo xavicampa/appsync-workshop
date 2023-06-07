@@ -121,83 +121,93 @@ Test the following:
     - Inspect Network tab in your browser's developer tool to check for the API error
     - Error might be reported only in the browser's Developer Console
 
-# Requirement 1
-Limit access to bookings `guest` field to `admin` members.
+# Exercises
+The following sections describe new requirements for the API. Use the AWS Console to make the required adjustments, remembering to apply/save your changes. Be aware of the eventual consistency characteristics of AWS, changes might take a few seconds to be effective.
 
-## HOW
-Add `@aws_auth` to `guest` field in `Booking` type with only the `admin` group.
+## Requirement 1
+Limit access to the `guest` field from the `Booking` type to `admin` members.
 
-### Test
+### HOW
+1. In the AWS Console, go to the AWS AppSync service, select BookingAPI and Schema
+2. Modify the schema adding `@aws_auth` to the `guest` field in the `Booking` type, it should only contain the `admin` cognito group
+3. Save the schema
+
+#### Test
 - running listBookings as `admin` succeeds when querying for `guest` field
 - running listBookings as `person1` fails when querying for `guest` field
 
-### Observe
+#### Observe
 - Inspect the GraphQL response, what's in `data` and `error` fields
 
-# Requirement 2
+## Requirement 2
 Allow guest to add their own booking, without exposing guest as a parameter
 
-## HOW
-New mutation, guest auth, no guest parameter, use `$ctx.identity.sub` in resolver
+### HOW
+1. In the AWS Console, go to the AWS AppSync service, select BookingAPI and Schema
+2. Modify the schema to add a new mutation, similar to addBooking, with guest cognito group authorization, without guest parameter
+3. Save the schema
+4. Attach a new resolver to the new mutation from the panel on the right
+5. Select Update runtime and specify a Unit resolver (VTL)
+6. Copy the mapping templates from the addBooking mutation, but use `$ctx.identity.sub` as guest key, and save
 
-### Test
+#### Test
 - Adding a booking as guest succeeds
 
-### Observe
+#### Observe
 - Updates are not visible at once, one has to exit Bookings (Home, or Rooms) and load again Bookings
 - Guest cannot remove bookings
 
-# Requirement 3
+## Requirement 3
 Make guest bookings visible without refresh
 
-## HOW
-Add the new mutation to subscription
+### HOW
+1. Modify the schema by adding the new mutation to the list of mutations that trigger the existing subscription
 
-### Test
+#### Test
 - Adding a booking as guest succeeds and appears without refresh
 
-# Requirement 4
+## Requirement 4
 Allow guest to remove their own bookings, without exposing guest as parameter.
 
-## HOW
-New mutation, guest auth, no guest parameter, use $ctx.identity.sub for *authorization* in resolver.
+### HOW
+Summary: New mutation, guest auth, no guest parameter, use $ctx.identity.sub for *authorization* in resolver.
 
-### Test
+#### Test
 - Removing guest booking works
 - Removing admin booking does not work
 
-### Observe
+#### Observe
 - Updates are not visible without refresh (fix by adding new mutation to subscription)
 
-# Requirement 5
+## Requirement 5
 Display room price (per day) of bookings without issuing extra API calls.
 
 _OPTIONAL: modify frontend to display the new field. Requires NodeJS._
 
-## HOW
+### HOW
 Add `room` field to `Booking` type of type `Room`, add resolver and mapping template
 
-### Test
+#### Test
 - listBookings accepts `room` field and can return its `price`
 
-### Observe
+#### Observe
 - The new field requires `@aws_auth` to be added
 
-# Requirement 6
+## Requirement 6
 Display bookings when listing rooms without issuing extra API calls.
 
 _OPTIONAL: modify frontend to display booking information the room list. Requires NodeJS._
 
-## HOW
+### HOW
 Add `bookings` field to `Room` type of type `Booking[]`, add resolver and mapping template
 
-### Test
+#### Test
 - listRooms accepts `bookings` field and can return its properties
 
-### Observe
+#### Observe
 - The new field requires `@aws_auth` to be added
 
-# Requirement 7
+## Requirement 7
 Add filtering, so that `listBookings` can filter results by `guest` and `roomid`.
 
 # Clean up

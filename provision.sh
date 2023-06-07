@@ -41,7 +41,9 @@ DBCLUSTERARN=`aws rds create-db-cluster \
 
 echo "Creating user pool"
 # Cognito userpool
-COGNITOUSERPOOLID=`aws cognito-idp create-user-pool --pool-name BookingUserPool --output json | jq -r .UserPool.Id`
+COGNITOUSERPOOLID=`aws cognito-idp create-user-pool \
+    --pool-name BookingUserPool \
+    --output json | jq -r .UserPool.Id`
 
 # Cognito domain (to expose HostedUI)
 AWS_ACCOUNT=`aws sts get-caller-identity | jq -r .Account`
